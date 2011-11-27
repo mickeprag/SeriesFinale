@@ -97,6 +97,14 @@ class SortedSeriesList(QtGui.QSortFilterProxyModel):
         rightData = self.sourceModel().data(right)
         if (self.sortOrder == self._settings.BY_TITLE):
             return str(leftData) < str(rightData)
+        #Sort completed last
+        if rightData.is_completely_watched():
+            if leftData.is_completely_watched():
+                #Both complete, sort by title
+                return str(leftData) < str(rightData)
+            return True
+        elif leftData.is_completely_watched():
+            return False
         leftEpisodes = leftData.get_episodes_info()
         rightEpisodes = rightData.get_episodes_info()
         episode1 = leftEpisodes['next_episode']
