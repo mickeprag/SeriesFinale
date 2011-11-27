@@ -78,7 +78,7 @@ class MainWindow(QDeclarativeView):
         self.rootContext().setContextProperty("seriesList", self.series_manager.sorted_series_list)
         self.rootContext().setContextProperty("settings", settingsWrapper)
         settingsWrapper.showsSortChanged.connect(self.series_manager.sorted_series_list.resort)
-        settingsWrapper.hideCompletedShowsChanged.connect(self.series_manager.sorted_series_list.resort)
+        settingsWrapper.hideCompletedShowsChanged.connect(self.series_manager.sorted_series_list.reapplyFilter)
         self.setSource(constants.QML_MAIN)
         self.showFullScreen()
 

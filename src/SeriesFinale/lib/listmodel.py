@@ -79,6 +79,11 @@ class SortedSeriesList(QtGui.QSortFilterProxyModel):
         self.hideCompleted = self._settings.getConf(self._settings.HIDE_COMPLETED_SHOWS)
         self.invalidate()
 
+    def reapplyFilter(self):
+        self.resort()
+        #This seems to be needed for QML to reload the filter. invalidateFilter doesn't seem to work
+        self.reset()
+
     def filterAcceptsRow(self, sourceRow, sourceParent):
         if not self.hideCompleted:
             return True
