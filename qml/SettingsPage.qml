@@ -17,13 +17,14 @@ Page {
             spacing: 18
 
             Text {
-                text: "Show sorting:"
+                text: "Sort shows by:"
                 font.pixelSize: 26
                 color: 'white'
             }
             ButtonRow {
-                Button { text: "By title"; onClicked: settings.showsSort=0 }
-                Button { text: "By episode date"; onClicked: settings.showsSort=1; checked: settings.showsSort == 1 }
+                Button { text: "Title"; onClicked: settings.showsSort=0 }
+                Button { text: "Newest"; onClicked: settings.showsSort=1; checked: settings.showsSort == 1 }
+                Button { text: "Oldest"; onClicked: settings.showsSort=2; checked: settings.showsSort == 2 }
             }
 
             Text {

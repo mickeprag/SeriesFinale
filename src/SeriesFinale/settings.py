@@ -28,6 +28,7 @@ class Settings(object):
     DESCENDING_ORDER = 1
     BY_TITLE = 0
     RECENT_EPISODE = 1
+    OLDEST_EPISODE = 2
 
     AUTOMATIC = 0
     PORTRAIT = 1
