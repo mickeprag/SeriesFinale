@@ -94,6 +94,7 @@ Page {
             textWidth: header.width - infoIcon.width * 2.5
 
             Item {
+                id: infoIconContainer
                 height: parent.height
                 width: infoIcon.width
                 anchors.right: header.anchorPoint
@@ -109,7 +110,7 @@ Page {
             }
             MouseArea {
                 anchors.left: parent.left
-                anchors.right: infoIcon.right
+                anchors.right: infoIconContainer.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 width: parent.width - infoIcon.width - 20
