@@ -141,8 +141,8 @@ class SortedSeasonsList(QtGui.QSortFilterProxyModel):
 
     def lessThan(self, left, right):
         if (self.sortOrder == self._settings.DESCENDING_ORDER):
-            return self.sourceModel().data(left) > self.sourceModel().data(right)
-        return self.sourceModel().data(left) < self.sourceModel().data(right)
+            return int(self.sourceModel().data(left)) > int(self.sourceModel().data(right))
+        return int(self.sourceModel().data(left)) < int(self.sourceModel().data(right))
 
 class SortedEpisodesList(QtGui.QSortFilterProxyModel):
 
