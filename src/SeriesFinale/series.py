@@ -386,6 +386,7 @@ class Episode(QtCore.QObject):
         self.show.infoMarkupChanged.emit()
         series_manager = SeriesManager()
         series_manager.changed = True
+        series_manager.sorted_series_list.resort()
     isWatched = QtCore.Property(bool,get_watched,set_watched,notify=watchedChanged)
 
     overviewChanged = QtCore.Signal()
