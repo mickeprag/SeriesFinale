@@ -116,17 +116,11 @@ class SortedSeriesList(QtGui.QSortFilterProxyModel):
         if not episode2:
             if episode1:
                 return True
+        if (self.sortOrder == self._settings.OLDEST_EPISODE):
+            return episode1.air_date < episode2.air_date
         most_recent = (episode1 or episode2).get_most_recent(episode2)
         if not most_recent:
             return str(leftData) < str(rightData)
-        if (self.sortOrder == self._settings.OLDEST_EPISODE):
-            if episode1.already_aired() and episode2.already_aired():
-                return episode1 != most_recent
-            elif not episode1.already_aired():
-                return False
-            elif not episode2.already_aired():
-                return True
-            return episode1 != most_recent
         return episode1 == most_recent
 
 class SortedSeasonsList(QtGui.QSortFilterProxyModel):
