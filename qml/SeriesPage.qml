@@ -30,12 +30,14 @@ Page {
         }
 
         delegate: ListRowDelegate {
+            id: delegate
             title: model.data.showName
             subtitle: model.data.infoMarkup
             iconSource: model.data.coverImage
+            property variant show: undefined //Non binded property
             Component {
                 id: showPageComponent
-                ShowPage { show: model.data }
+                ShowPage { show: delegate.show }
             }
             ContextMenu {
                 id: contextMenu
@@ -43,8 +45,10 @@ Page {
                     MenuItem {text: "Delete show"; onClicked: { series_manager.delete_show(model.data) } }
                 }
             }
-
-            onClicked: pageStack.push(showPageComponent.createObject(pageStack))
+            onClicked: {
+                delegate.show = model.data //This is to break the property binding if the list is destroyed or reordered
+                pageStack.push(showPageComponent.createObject(pageStack))
+            }
             onPressAndHold: {
                 contextMenu.open()
             }
