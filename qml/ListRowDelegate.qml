@@ -52,6 +52,7 @@ Item {
                 font.weight: Font.Light
                 font.pixelSize: 22
                 x: 20
+                maximumLineCount: 3
                 color: theme.inverted ? secondaryTextColor : "#505050"
 
                 visible: text != ""
