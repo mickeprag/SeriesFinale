@@ -19,6 +19,7 @@
 ###########################################################################
 
 from threading import Thread
+import Queue
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -52,12 +53,13 @@ class AsyncItem(object):
 
 class AsyncWorker(Thread):
 
-    def __init__(self):
+    def __init__(self, interrumpible):
         Thread.__init__(self)
-        self.queue = PriorityQueue()
+        self.queue = Queue.Queue(0)
         self.stopped = False
         self.async_item = None
         self.item_number = -1
+        self.setDaemon(interrumpible)
 
     def run(self):
         while not self.stopped:
@@ -68,6 +70,7 @@ class AsyncWorker(Thread):
                 self.async_item = self.queue.get()
                 self.item_number += 1
                 self.async_item.run()
+                self.queue.task_done()
                 self.async_item = None
             except Exception, exception:
                 logging.debug(str(exception))
@@ -81,27 +84,3 @@ class AsyncWorker(Thread):
     def start(self):
         self.stopped = False
         Thread.start(self)
-
-class PriorityQueue(list):
-
-    def __init__(self):
-        list.__init__(self)
-
-    def put(self, item):
-        (item_priority, item_element) = item
-        for i in range(0, len(self)):
-            (last_priority, last_element) = self[i]
-            if (last_priority > item_priority):
-                self.insert(i, item)
-                return
-        self.append(item)
-
-    def get(self):
-        if self:
-            value = self[0][1]
-            del self[0]
-            return value
-        return None
-
-    def empty(self):
-        return not bool(self)

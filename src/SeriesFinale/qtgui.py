@@ -67,14 +67,15 @@ class MainWindow(QDeclarativeView):
                                     (constants.SF_DB_FILE,),
                                     self._load_finished)
 
-        self.request = AsyncWorker()
-        self.request.queue.put((0, load_conf_item))
-        self.request.queue.put((0, load_shows_item))
+        self.request = AsyncWorker(True)
+        self.request.queue.put(load_conf_item)
+        self.request.queue.put(load_shows_item)
         self.request.start()
 
         self.setWindowTitle(constants.SF_NAME)
         settingsWrapper = SettingsWrapper(self)
         self.rootContext().setContextProperty("series_manager", self.series_manager)
+        self.rootContext().setContextProperty("version", constants.SF_VERSION)
         self.rootContext().setContextProperty("seriesList", self.series_manager.sorted_series_list)
         self.rootContext().setContextProperty("settings", settingsWrapper)
         settingsWrapper.showsSortChanged.connect(self.series_manager.sorted_series_list.resort)
@@ -110,9 +111,9 @@ class MainWindow(QDeclarativeView):
         save_conf_item = AsyncItem(self.settings.save,
                                (constants.SF_CONF_FILE,),
                                self._save_finished_cb)
-        async_worker = AsyncWorker()
-        async_worker.queue.put((0, save_shows_item))
-        async_worker.queue.put((0, save_conf_item))
+        async_worker = AsyncWorker(False)
+        async_worker.queue.put(save_shows_item)
+        async_worker.queue.put(save_conf_item)
         async_worker.start()
         event.ignore()
 

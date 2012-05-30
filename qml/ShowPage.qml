@@ -37,7 +37,22 @@ Page {
                         font.pixelSize: 26
                         font.weight: Font.Bold
                         color: 'white'
+                        wrapMode: Text.WordWrap
+                        width: parent.width - closeIcon.width - 10
                     }
+
+                    Image {
+                        id: closeIcon
+                        source: "image://theme/icon-m-common-dialog-close"
+                        anchors.right: parent.right;
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: showInfoDialog.close()
+                        }
+                    }
+
                     Rectangle {
                         anchors.top: parent.bottom
                         width: parent.width
@@ -79,12 +94,6 @@ Page {
     }
 
 
-    Column {
-        id: metaData
-        anchors.top: parent.top
-        width: parent.width
-        spacing: 18
-
         Header {
             id: header
             text: show.showName
@@ -94,7 +103,7 @@ Page {
             textWidth: header.width - infoIcon.width * 2.5
 
             Item {
-                id: infoIconContainer
+                id: infoIconItem
                 height: parent.height
                 width: infoIcon.width
                 anchors.right: header.anchorPoint
@@ -110,7 +119,7 @@ Page {
             }
             MouseArea {
                 anchors.left: parent.left
-                anchors.right: infoIconContainer.right
+                anchors.right: infoIconItem.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 width: parent.width - infoIcon.width - 20
@@ -118,11 +127,10 @@ Page {
                 onClicked: showInfoDialog.open()
             }
         }
-    }
 
     ListView {
         id: listView
-        anchors.top: metaData.bottom
+        anchors.top: header.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
@@ -140,6 +148,7 @@ Page {
                     markAllItem.text = show.is_completely_watched(model.data) ? 'Mark None' : 'Mark All'
                 }
                 onShowArtChanged: iconSource = show.get_season_image(model.data)
+                onEpisodesListUpdated: listView.model = show.get_seasons_model()
             }
 
             Component {

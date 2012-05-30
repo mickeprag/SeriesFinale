@@ -1,7 +1,16 @@
 seriesfinale (0.6.9-1) unstable; urgency=low
-  * Add context menus to the shows and seasons views
-  * Change the looks of the live search's cancel button
- -- Joaquim Rocha <jrocha@igalia.com>  Thu, 13 Oct 2011 20:30:48 +0100
+  * Fix marking all episodes from the episodes' list menu (nd#1)
+  * Add mark none action to the episodes' list menu
+  * Sort seasons by numerical comparison
+  * Fix episodes' overview height (nd#9)
+  * Fix shows season list update
+  * Replace PriorityQueue by Queue
+  * Use interruptable threads
+  * Fix header on Series page
+  * Make episodes view's header scroll together with list
+  * Add close button to show info dialog
+  * Add version from constants
+ -- Joaquim Rocha <jrocha@igalia.com>  Thu, 29 May 2012 20:30:48 +0100
 
 seriesfinale (0.6.8-1) unstable; urgency=low
   * Fix image retrieval
