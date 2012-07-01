@@ -21,7 +21,7 @@
 import jsonpickle
 import json
 import SeriesFinale.series
-from listmodel import ListModel
+from .listmodel import ListModel
 from xml.etree import ElementTree as ET
 
 def serialize(show_list):
@@ -47,8 +47,10 @@ class ShowDecoder(json.JSONEncoder):
     def default(self, show):
         show_json = dict(show.__dict__)
         show_json['json_type'] = 'show'
-        del show_json['downloading_season_image']
-        del show_json['downloading_show_image']
+        if 'downloading_season_image' in show_json:
+            del show_json['downloading_season_image']
+        if 'downloading_show_image' in show_json:
+            del show_json['downloading_show_image']
         episode_list = show_json['episode_list'].list()
         remove_private_vars(show_json)
         show_json['episode_list'] = [self._decode_episode(episode) \
@@ -100,7 +102,7 @@ def episode_encoder(show, dictionary):
     return episode
 
 def remove_private_vars(dictionary):
-    for key in dictionary.keys():
+    for key in list(dictionary.keys()):
         if key[0] == '_':
             del dictionary[key]
         elif hasattr(dictionary[key], 'emit'): #isinstance(s, QtCore.Signal) doesn't work for some unknown reason

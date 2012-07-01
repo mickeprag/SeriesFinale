@@ -19,7 +19,7 @@
 ###########################################################################
 
 from threading import Thread
-import Queue
+import queue
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -38,7 +38,7 @@ class AsyncItem(object):
         results = error = None
         try:
             results = self.target_method(*self.target_method_args)
-        except Exception, exception:
+        except Exception as exception:
             logging.debug(str(exception))
             error = exception
         if self.canceled or not self.finish_callback:
@@ -55,7 +55,7 @@ class AsyncWorker(Thread):
 
     def __init__(self, interrumpible):
         Thread.__init__(self)
-        self.queue = Queue.Queue(0)
+        self.queue = queue.Queue(0)
         self.stopped = False
         self.async_item = None
         self.item_number = -1
@@ -72,7 +72,7 @@ class AsyncWorker(Thread):
                 self.async_item.run()
                 self.queue.task_done()
                 self.async_item = None
-            except Exception, exception:
+            except Exception as exception:
                 logging.debug(str(exception))
                 self.stop()
 

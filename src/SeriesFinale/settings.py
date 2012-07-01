@@ -19,7 +19,7 @@
 ###########################################################################
 
 import os
-from lib import constants
+from .lib import constants
 from xml.etree import ElementTree as ET
 
 class Settings(object):

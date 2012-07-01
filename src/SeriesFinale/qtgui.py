@@ -24,13 +24,13 @@ import os
 import re
 import time
 from xml.sax import saxutils
-from series import SeriesManager, Show, Episode
-from lib import constants
-from lib.connectionmanager import ConnectionManager
-from lib.portrait import FremantleRotation
-from lib.util import get_color
-from settings import Settings
-from asyncworker import AsyncWorker, AsyncItem
+from .series import SeriesManager, Show, Episode
+from .lib import constants
+from .lib.connectionmanager import ConnectionManager
+from .lib.portrait import FremantleRotation
+from .lib.util import get_color
+from .settings import Settings
+from .asyncworker import AsyncWorker, AsyncItem
 
 _ = gettext.gettext
 from PySide.QtCore import *

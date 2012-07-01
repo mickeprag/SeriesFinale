@@ -19,13 +19,13 @@
 ###########################################################################
 
 import os
-from lib import thetvdbapi, serializer, constants
-from lib.util import image_downloader
-from lib.listmodel import *
+from .lib import thetvdbapi, serializer, constants
+from .lib.util import image_downloader
+from .lib.listmodel import *
 from xml.etree import ElementTree as ET
-from asyncworker import AsyncWorker, AsyncItem
-from lib.constants import TVDB_API_KEY, DATA_DIR, DEFAULT_LANGUAGES, SF_LANG_FILE
-from settings import Settings
+from .asyncworker import AsyncWorker, AsyncItem
+from .lib.constants import TVDB_API_KEY, DATA_DIR, DEFAULT_LANGUAGES, SF_LANG_FILE
+from .settings import Settings
 from datetime import datetime
 from datetime import timedelta
 from xml.sax import saxutils
@@ -80,7 +80,7 @@ class Show(QtCore.QObject):
     def set_cover_image(self, new_path):
         self.image = new_path
         self.coverImageChanged.emit()
-    coverImage = QtCore.Property(unicode,cover_image,set_cover_image,notify=coverImageChanged)
+    coverImage = QtCore.Property(str,cover_image,set_cover_image,notify=coverImageChanged)
 
     nameChanged = QtCore.Signal()
     def get_name(self):
@@ -88,7 +88,7 @@ class Show(QtCore.QObject):
     def set_name(self, name):
         self.name = name
         self.nameChanged.emit()
-    showName = QtCore.Property(unicode,get_name,set_name,notify=nameChanged)
+    showName = QtCore.Property(str,get_name,set_name,notify=nameChanged)
 
     overviewChanged = QtCore.Signal()
     def get_overview(self):
@@ -96,7 +96,7 @@ class Show(QtCore.QObject):
     def set_overview(self, overview):
         self.overview = overview
         self.overviewChanged.emit()
-    showOverview = QtCore.Property(unicode,get_overview,set_overview,notify=overviewChanged)
+    showOverview = QtCore.Property(str,get_overview,set_overview,notify=overviewChanged)
 
     def get_episodes_by_season(self, season_number):
         if season_number is None:
@@ -134,7 +134,7 @@ class Show(QtCore.QObject):
                 seasons.append(season_number)
         return seasons
 
-    @QtCore.Slot(unicode,result=unicode)
+    @QtCore.Slot(str,result=str)
     def get_season_image(self, season):
         retval = constants.PLACEHOLDER_IMAGE
         if (season not in self.season_images):
@@ -147,7 +147,7 @@ class Show(QtCore.QObject):
         return [episode for episode in self.episode_list \
                   if episode.season_number == season]
 
-    @QtCore.Slot(unicode,result=QtCore.QObject)
+    @QtCore.Slot(str,result=QtCore.QObject)
     def get_sorted_episode_list_by_season(self, season):
         return SortedEpisodesList(ListModel(self.get_episode_list_by_season(season)), Settings(), self)
 
@@ -176,18 +176,18 @@ class Show(QtCore.QObject):
                 series_manager.changed = True
                 break
 
-    @QtCore.Slot(unicode)
+    @QtCore.Slot(str)
     def delete_season(self, season):
         episodes = self.get_episode_list_by_season(season)
         for episode in episodes:
             self.delete_episode(episode)
         self.infoMarkupChanged.emit()
 
-    @QtCore.Slot(unicode)
+    @QtCore.Slot(str)
     def mark_all_episodes_as_not_watched(self, season = None):
         self._mark_all_episodes(False, season)
 
-    @QtCore.Slot(unicode)
+    @QtCore.Slot(str)
     def mark_all_episodes_as_watched(self, season = None):
         self._mark_all_episodes(True, season)
 
@@ -198,7 +198,7 @@ class Show(QtCore.QObject):
         SeriesManager().updated()
         self.infoMarkupChanged.emit()
 
-    @QtCore.Slot(unicode, result=bool)
+    @QtCore.Slot(str, result=bool)
     def is_completely_watched(self, season = None):
         episodes = self.get_episodes_by_season(season)
         for episode in episodes:
@@ -271,16 +271,16 @@ class Show(QtCore.QObject):
         else:
             show_info = ''
         return show_info
-    infoMarkup = QtCore.Property(unicode,get_info_markup,notify=infoMarkupChanged)
+    infoMarkup = QtCore.Property(str,get_info_markup,notify=infoMarkupChanged)
 
-    @QtCore.Slot(unicode,result=unicode)
+    @QtCore.Slot(str,result=str)
     def get_season_name(self, season):
         if season == '0':
             return _('Special')
         else:
             return _('Season %s') % season
 
-    @QtCore.Slot(unicode,result=unicode)
+    @QtCore.Slot(str,result=str)
     def get_season_info_markup(self, season):
         info = self.get_episodes_info(season)
         episodes = info['episodes']
@@ -305,7 +305,7 @@ class Show(QtCore.QObject):
                                    (next_episode.episode_number, \
                                     next_episode.get_air_date_text())
                 else:
-		    season_info += '<br/>' + _('<i>Next episode:</i> %s') % \
+                    season_info += '<br/>' + _('<i>Next episode:</i> %s') % \
                                    next_episode.episode_number
         return season_info
 
@@ -375,7 +375,7 @@ class Episode(QtCore.QObject):
     titleChanged = QtCore.Signal()
     def get_title(self):
         return _('Ep. %s: %s') % (self.get_episode_show_number(), self.name)
-    title = QtCore.Property(unicode,get_title,notify=titleChanged)
+    title = QtCore.Property(str,get_title,notify=titleChanged)
 
     watchedChanged = QtCore.Signal()
     def get_watched(self): return self.watched
@@ -396,7 +396,7 @@ class Episode(QtCore.QObject):
     def set_overview(self, overview):
         self.overview = overview
         self.overviewChanged.emit()
-    overviewText = QtCore.Property(unicode,get_overview,set_overview,notify=overviewChanged)
+    overviewText = QtCore.Property(str,get_overview,set_overview,notify=overviewChanged)
 
     def __eq__(self, episode):
         if not episode:
@@ -438,7 +438,7 @@ class Episode(QtCore.QObject):
         if self.air_date.year != datetime.today().year:
             next_air_date_str += self.air_date.strftime(' %Y')
         return next_air_date_str
-    airDateText = QtCore.Property(unicode,get_air_date_text,notify=airDateTextChanged)
+    airDateText = QtCore.Property(str,get_air_date_text,notify=airDateTextChanged)
 
     @QtCore.Slot(result=bool)
     def already_aired(self):
@@ -627,8 +627,8 @@ class SeriesManager(QtCore.QObject):
     def get_searching(self): return self.searching
     isSearching = QtCore.Property(bool,get_searching,notify=searchingChanged)
 
-    @QtCore.Slot(unicode)
-    @QtCore.Slot(unicode,unicode)
+    @QtCore.Slot(str)
+    @QtCore.Slot(str,str)
     def search_shows(self, terms, language = "en"):
         if not terms:
             return []
@@ -703,7 +703,7 @@ class SeriesManager(QtCore.QObject):
         for show_id, show in tvdbshows:
             pass
 
-    @QtCore.Slot(unicode)
+    @QtCore.Slot(str)
     def get_complete_show(self, show_name, language = "en"):
         self.isUpdating = True
         self.busyChanged.emit()
@@ -824,7 +824,7 @@ class SeriesManager(QtCore.QObject):
             return
         self._assign_existing_images_to_show(show)
         seasons = show.get_seasons()
-        for key, image in show.season_images.items():
+        for key, image in list(show.season_images.items()):
             if not os.path.isfile(image):
                 del show.season_images[key]
                 self.changed = True
@@ -862,7 +862,7 @@ class SeriesManager(QtCore.QObject):
                     try:
                         image_file = os.path.abspath(image_downloader(url,
                                                                       target_file))
-                    except Exception, exception:
+                    except Exception as exception:
                         logging.debug(str(exception))
                     else:
                         show.season_images[season] = image_file

@@ -18,8 +18,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###########################################################################
 
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import os
 
 def get_color(color_name):
@@ -34,7 +34,7 @@ def get_color(color_name):
     return color_style.lookup_color(color_name).to_string()
 
 def image_downloader(url, save_name):
-    image = urllib2.urlopen(url).read()
+    image = urllib.request.urlopen(url).read()
     path, format = os.path.splitext(url)
     target = save_name + format
     temp_target = target + '.tmp'

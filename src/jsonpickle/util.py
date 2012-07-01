@@ -14,7 +14,7 @@ import types
 import datetime
 
 COLLECTIONS = set, list, tuple
-PRIMITIVES = str, unicode, int, float, bool, long
+PRIMITIVES = str, int, float, bool
 NEEDS_REPR = (datetime.datetime, datetime.time, datetime.date, 
               datetime.timedelta)
 

@@ -58,7 +58,7 @@ if not os.path.exists(DATA_DIR):
     try:
         os.makedirs(DATA_DIR)
     except:
-        print 'Error trying to make: ', DATA_DIR
+        print('Error trying to make: ', DATA_DIR)
 
 DEFAULT_SYSTEM_APP_DIR = os.path.join(sys.prefix,
                                       'share',
