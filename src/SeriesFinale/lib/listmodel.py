@@ -18,55 +18,116 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###########################################################################
 
-from PySide import QtCore, QtGui
+from PySide.QtCascades import bb
+from PySide.QtCore import qDebug, QObject, Slot, QThread
 
-class ListModel(QtCore.QAbstractListModel):
+import sys, traceback
+
+class ListModel(bb.cascades.DataModel):
     def __init__(self, items = [], parent = None):
-        QtCore.QAbstractListModel.__init__(self, parent)
+        super(ListModel, self).__init__(parent)
         self._items = items
-        self.setRoleNames({0: 'data'})
+        for item in items:
+            if isinstance(item, QObject) and item.parent() == None:
+                item.setParent(self)
+        self._itemType = ''
 
     def append(self, show):
-        self.beginInsertRows(QtCore.QModelIndex(), len(self._items), len(self._items));
+        if (show.parent() == None):
+        #    qDebug("Reparent item")
+            #If we do not have a parent the item the ListView
+            #will reparent the object which will not work.
+            show.setParent(self)
+        #qDebug("Parent: %s" % str(show.parent()))
+        #qDebug(show.parent())
         self._items.append(show)
-        self.endInsertRows()
+        self.itemAdded.emit([len(self._items)-1])
 
     def clear(self):
-        if not self._items:
+        qDebug("Clearing")
+        '''if not self._items:
             return
         self.beginRemoveRows(QtCore.QModelIndex(), 0, len(self._items)-1)
         self._items = []
-        self.endRemoveRows()
+        self.endRemoveRows()'''
 
-    def columnCount(self, parent=QtCore.QModelIndex()):
-        return 1
-
-    def rowCount(self, parent=QtCore.QModelIndex()):
+    def childCount(self, indexPath):
+        #qDebug("Return len %d" % len(self._items))
         return len(self._items)
 
-    def data(self, index, role = QtCore.Qt.DisplayRole):
-        if not index.isValid():
-            return
-        if role == 0:
-            return self._items[index.row()]
+    @Slot(int,result=str)
+    def dataStr(self,indexPath):
+        return str(self.data(indexPath))
+
+    @Slot(int,result=QObject)
+    def data(self, indexPath):
+        #qDebug("ListModel.data(%s)" % str(indexPath))
+        try:
+            if type(indexPath) == list:
+                obj = self._items[indexPath[0]]
+            else:
+                obj = self._items[indexPath]
+            #qDebug("Returning %s" % str(obj))
+            return obj
+        except Exception as e:
+            qDebug(str(e))
+        finally:
+            #qDebug("returned")
+            pass
 
     def list(self):
         return self._items
 
+    def hasChildren(self, indexPath):
+        return False
+
+    def itemType(self, indexPath):
+        return self._itemType
+
+    def setItemType(self, itemType):
+        self._itemType = itemType
+
     def __len__(self):
-        return self.rowCount()
+        return len(self._items)
 
     def __delitem__(self, index):
-        self.beginRemoveRows(QtCore.QModelIndex(), index, index)
+        #TODO
+        '''self.beginRemoveRows(QtCore.QModelIndex(), index, index)
         del self._items[index]
-        self.endRemoveRows()
+        self.endRemoveRows()'''
+        pass
 
     def __getitem__(self, key):
         return self._items[key]
 
-class SortedSeriesList(QtGui.QSortFilterProxyModel):
+class SortedList(ListModel):
+    def setSourceModel(self, model):
+        qDebug("Set sourcemodel")
+        self.model = model
+        model.itemAdded.connect(self.itemAdded)
 
+    def childCount(self, indexPath):
+        return self.model.childCount(indexPath)
+
+    @Slot(int,result=QObject)
+    def data(self, indexPath):
+        return self.model.data(indexPath)
+
+    def childCount(self, indexPath):
+        #qDebug("Return len %d" % len(self._items))
+        return self.model.childCount(indexPath)
+
+    def resort(self):
+        pass
+    def reapplyFilter(self):
+        pass
+
+class SortedSeriesList(SortedList):
     def __init__(self, settings, parent=None):
+        super(SortedSeriesList, self).__init__(parent=parent)
+        #self.setItemType('series')
+
+'''    def __init__(self, settings, parent=None):
         QtGui.QSortFilterProxyModel.__init__(self, parent)
         self._settings = settings
         self.sortOrder = self._settings.getConf(self._settings.SHOWS_SORT)
@@ -121,15 +182,21 @@ class SortedSeriesList(QtGui.QSortFilterProxyModel):
         most_recent = (episode1 or episode2).get_most_recent(episode2)
         if not most_recent:
             return str(leftData) < str(rightData)
-        return episode1 == most_recent
+        return episode1 == most_recent'''
 
-class SortedSeasonsList(QtGui.QSortFilterProxyModel):
+class SortedSeasonsList(SortedList):
+    def __init__(self, l, settings, parent=None):
+        super(SortedSeasonsList, self).__init__(parent=parent)
+        self._settings = settings
+        self.sortOrder = self._settings.getConf(self._settings.SEASONS_ORDER_CONF_NAME)
+        self.setSourceModel(l)
+        self.setItemType('seasons')
+        qDebug(str(l))
 
+'''
     def __init__(self, list, settings, parent=None):
         QtGui.QSortFilterProxyModel.__init__(self, parent)
-        self._settings = settings
         self.setDynamicSortFilter(True)
-        self.sortOrder = self._settings.getConf(self._settings.SEASONS_ORDER_CONF_NAME)
         self.sort(0)
         self.setSourceModel(list)
 
@@ -137,9 +204,10 @@ class SortedSeasonsList(QtGui.QSortFilterProxyModel):
         if (self.sortOrder == self._settings.DESCENDING_ORDER):
             return int(self.sourceModel().data(left)) > int(self.sourceModel().data(right))
         return int(self.sourceModel().data(left)) < int(self.sourceModel().data(right))
-
-class SortedEpisodesList(QtGui.QSortFilterProxyModel):
-
+'''
+class SortedEpisodesList(SortedList):
+    pass
+'''
     def __init__(self, list, settings, parent=None):
         QtGui.QSortFilterProxyModel.__init__(self, parent)
         self._settings = settings
@@ -152,3 +220,4 @@ class SortedEpisodesList(QtGui.QSortFilterProxyModel):
         if (self.sortOrder == self._settings.DESCENDING_ORDER):
             return self.sourceModel().data(left).episode_number > self.sourceModel().data(right).episode_number
         return self.sourceModel().data(left).episode_number < self.sourceModel().data(right).episode_number
+'''

@@ -18,10 +18,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###########################################################################
 
-import jsonpickle
 import json
 import SeriesFinale.series
 from .listmodel import ListModel
+from PySide.QtCore import QCoreApplication
 from xml.etree import ElementTree as ET
 
 def serialize(show_list):
@@ -76,12 +76,11 @@ class ShowDecoder(json.JSONEncoder):
 def show_encoder(dictionary):
     if dictionary.get('json_type') != 'show':
         return dictionary
-    name = dictionary['name'].encode('utf-8')
-    del dictionary['name']
     del dictionary['json_type']
     episode_list = list(dictionary['episode_list'])
     del dictionary['episode_list']
-    show = SeriesFinale.series.Show(name, **dictionary)
+    show = SeriesFinale.series.Show(**dictionary)
+    show.moveToThread(QCoreApplication.instance().thread())
     episode_list = ListModel([episode_encoder(show, episode) for episode in \
                      episode_list])
     show.episode_list = episode_list
@@ -90,7 +89,7 @@ def show_encoder(dictionary):
 def episode_encoder(show, dictionary):
     if dictionary.get('json_type') != 'episode':
         return dictionary
-    name = dictionary['name'].encode('utf-8')
+    name = dictionary['name']
     del dictionary['name']
     del dictionary['json_type']
     episode_number = dictionary['episode_number']

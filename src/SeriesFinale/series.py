@@ -36,6 +36,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 _ = gettext.gettext
 
+from PySide import QtCore
+
 class Show(QtCore.QObject):
 
     infoMarkupChanged = QtCore.Signal()
@@ -61,6 +63,8 @@ class Show(QtCore.QObject):
         self.downloading_show_image = False
         self.downloading_season_image = downloading_season_image
         self._busy = False
+        self._seasonsList = None
+        self._sorted_episode_list_by_season = {}
 
     busyChanged = QtCore.Signal()
     def get_busy(self): return self._busy
@@ -84,7 +88,7 @@ class Show(QtCore.QObject):
 
     nameChanged = QtCore.Signal()
     def get_name(self):
-        return self.name
+        return str(self.name)
     def set_name(self, name):
         self.name = name
         self.nameChanged.emit()
@@ -124,7 +128,9 @@ class Show(QtCore.QObject):
 
     @QtCore.Slot(result=QtCore.QObject)
     def get_seasons_model(self):
-        return SortedSeasonsList(ListModel(self.get_seasons()), Settings(), self)
+        if self._seasonsList == None:
+            self._seasonsList = ListModel(self.get_seasons())
+        return self._seasonsList
 
     def get_seasons(self):
         seasons = []
@@ -149,7 +155,9 @@ class Show(QtCore.QObject):
 
     @QtCore.Slot(str,result=QtCore.QObject)
     def get_sorted_episode_list_by_season(self, season):
-        return SortedEpisodesList(ListModel(self.get_episode_list_by_season(season)), Settings(), self)
+        if season not in self._sorted_episode_list_by_season:
+            self._sorted_episode_list_by_season[season] = ListModel(self.get_episode_list_by_season(season))
+        return self._sorted_episode_list_by_season[season]
 
     def update_episode_list(self, episode_list):
         add_special_seasons = Settings().getConf(Settings.ADD_SPECIAL_SEASONS)
@@ -542,8 +550,9 @@ class SeriesManager(QtCore.QObject):
         if cls._instance:
             return cls._instance
 
-        cls._instance = super(SeriesManager, cls).__new__(
-            cls, *args, **kwargs)
+        s = super(SeriesManager, cls)
+        cls._instance = super(SeriesManager, cls).__new__(cls, *args, **kwargs)
+        s.__new__(cls, *args, **kwargs)
         return cls._instance
 
     def __init__(self):

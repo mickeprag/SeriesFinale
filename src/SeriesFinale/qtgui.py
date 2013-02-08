@@ -24,27 +24,25 @@ import os
 import re
 import time
 from xml.sax import saxutils
+
+from PySide.QtCore import *
+from .lib.PyCascades import CApplication
+from PySide.QtCascades import bb
+
 from .series import SeriesManager, Show, Episode
 from .lib import constants
-from .lib.connectionmanager import ConnectionManager
-from .lib.portrait import FremantleRotation
-from .lib.util import get_color
 from .settings import Settings
 from .asyncworker import AsyncWorker, AsyncItem
 
 _ = gettext.gettext
-from PySide.QtCore import *
-from PySide.QtGui import *
-from PySide.QtDeclarative import *
 
-class MainWindow(QDeclarativeView):
+class MainWindow(CApplication):
 
     def __init__(self):
-        QDeclarativeView.__init__(self)
-        self.engine().quit.connect(self.close)
+        super(MainWindow, self).__init__()
 
         # i18n
-        languages = []
+        '''languages = []
         lc, encoding = locale.getdefaultlocale()
         if lc:
             languages = [lc]
@@ -56,7 +54,7 @@ class MainWindow(QDeclarativeView):
                                        constants.LOCALE_DIR,
                                        languages = languages,
                                        fallback = True)
-        _ = language.gettext
+        _ = language.gettext'''
 
         self.series_manager = SeriesManager()
         self.settings = Settings()
@@ -74,17 +72,17 @@ class MainWindow(QDeclarativeView):
 
         self.setWindowTitle(constants.SF_NAME)
         settingsWrapper = SettingsWrapper(self)
+        self.setSource(constants.QML_MAIN)
         self.rootContext().setContextProperty("series_manager", self.series_manager)
-        self.rootContext().setContextProperty("version", constants.SF_VERSION)
-        self.rootContext().setContextProperty("seriesList", self.series_manager.sorted_series_list)
+        #self.rootContext().setContextProperty("version", constants.SF_VERSION)
+        self.rootContext().setContextProperty("seriesList", self.series_manager.series_list)
         self.rootContext().setContextProperty("settings", settingsWrapper)
         settingsWrapper.showsSortChanged.connect(self.series_manager.sorted_series_list.resort)
         settingsWrapper.hideCompletedShowsChanged.connect(self.series_manager.sorted_series_list.reapplyFilter)
-        self.setSource(constants.QML_MAIN)
         self.showFullScreen()
 
-    def closeEvent(self, event):
-        self._exit_cb(event)
+#    def closeEvent(self, event):
+#        self._exit_cb(event)
 
     def _settings_load_finished(self, dummy_arg, error):
         self.series_manager.sorted_series_list.resort()
@@ -93,7 +91,7 @@ class MainWindow(QDeclarativeView):
         self.request = None
         self.series_manager.auto_save(True)
 
-    @Slot()
+    '''@Slot()
     def _exit_cb(self, event):
         if self.request:
             self.request.stop()
@@ -118,7 +116,7 @@ class MainWindow(QDeclarativeView):
         event.ignore()
 
     def _save_finished_cb(self, dummy_arg, error):
-        QApplication.instance().quit()
+        QApplication.instance().quit()'''
 
 class SettingsWrapper(QObject):
     def __init__(self, parent=None):

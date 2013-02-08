@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<qnx xmlns="http://www.qnx.com/schemas/application/1.0">
+    <id>com.mickeprag.SeriesFinale</id>
+    <name>SeriesFinale</name>
+    <author>Micke Prag</author>
+    <versionNumber>1.0.0</versionNumber>
+    <configuration name="Default">
+        <platformArchitecture>armle-v7</platformArchitecture>
+    </configuration>
+    <initialWindow>
+        <autoOrients>true</autoOrients>
+    </initialWindow>
+    <icon><image>seriesfinale.png</image></icon>
+
+    <asset path="data/seriesfinale.png">seriesfinale.png</asset>
+    <asset path="main.py" entry="true" type="Qnx/Python">main.py</asset>
+    <asset path="src/SeriesFinale">SeriesFinale</asset>
+    <asset path="qml/bb10">qml</asset>
+    <asset path="data">assets/images</asset>
+    <asset path="PySide">PySide</asset>
+    <asset path="lib">lib</asset>
+
+    <action system="true">run_native</action>
+    <env var="CASCADES_THEME" value="dark"/>
+    <env var="PYTHONPATH" value="app/python" />
+    <env var="LD_LIBRARY_PATH" value="app/python/lib:/usr/lib/qt4/lib"/>
+</qnx>

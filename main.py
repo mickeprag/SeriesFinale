@@ -20,19 +20,12 @@
 ###########################################################################
 
 import sys
-import os
-from PySide.QtCore import *
-from PySide.QtGui import *
 
-local_src = os.path.dirname(__file__) + '/src'
-if os.path.exists(local_src):
-    sys.path = [local_src] + sys.path
+from ctypes import *
+qtcascades = CDLL('libbbcascades.so.1')
 
-from SeriesFinale.qtgui import MainWindow    
+from SeriesFinale.qtgui import MainWindow
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
     main_window = MainWindow()
-    main_window.show()
-
-    app.exec_()
+    main_window.exec_()
