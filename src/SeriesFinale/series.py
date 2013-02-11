@@ -56,8 +56,6 @@ class Show(QtCore.QObject):
         self.rating = rating
         self.actors = actors
         self.episode_list = episode_list
-        self.image = image
-        self.season_images = season_images
         self.thetvdb_id = thetvdb_id
         self.language = language
         self.downloading_show_image = False
@@ -74,15 +72,16 @@ class Show(QtCore.QObject):
     busy = QtCore.Property(bool,get_busy,notify=busyChanged)
 
     coverImageChanged = QtCore.Signal()
+    def have_cover_image(self):
+        path = os.path.join(DATA_DIR, '%s.jpg' % self.get_poster_prefix())
+        if os.path.exists(path):
+            return True
+        return False
     def cover_image(self):
-        try:
-            if os.path.exists(self.image):
-                return self.image
-        except:
-            pass
-        return constants.PLACEHOLDER_IMAGE
+        if not self.have_cover_image():
+            return constants.PLACEHOLDER_IMAGE
+        return os.path.join(DATA_DIR, '%s.jpg' % self.get_poster_prefix())
     def set_cover_image(self, new_path):
-        self.image = new_path
         self.coverImageChanged.emit()
     coverImage = QtCore.Property(str,cover_image,set_cover_image,notify=coverImageChanged)
 
@@ -142,12 +141,19 @@ class Show(QtCore.QObject):
 
     @QtCore.Slot(str,result=str)
     def get_season_image(self, season):
-        retval = constants.PLACEHOLDER_IMAGE
-        if (season not in self.season_images):
-            return retval
-        if os.path.exists(self.season_images[season]):
-            return self.season_images[season]
-        return retval
+        path = os.path.join(DATA_DIR, '%s.jpg' % self.get_season_poster_prefix(season))
+        if os.path.exists(path):
+            return path
+        return constants.PLACEHOLDER_IMAGE
+
+    def have_season_image(self, season):
+        return os.path.exists(os.path.join(DATA_DIR, '%s.jpg' % self.get_season_poster_prefix(season)))
+
+    def have_all_season_images(self):
+        for season in self.get_seasons():
+            if not self.have_season_image(season):
+                return False
+        return True
 
     def get_episode_list_by_season(self, season):
         return [episode for episode in self.episode_list \
@@ -332,6 +338,7 @@ class Show(QtCore.QObject):
         basename = os.path.basename(image)
         prefix, extension = os.path.splitext(basename)
         for season in self.get_seasons():
+            # TODO: season_images no longer exists
             if prefix.endswith(season) and not self.season_images.get(season):
                 self.season_images[season] = image
                 break
@@ -807,6 +814,7 @@ class SeriesManager(QtCore.QObject):
         for i in xrange(len(self.series_list)):
             if self.series_list[i] == show:
                 if not self._get_shows_from_id:
+                    # TODO: season_images no longer exists
                     for image in [show.image] + show.season_images.values():
                         if os.path.isfile(image):
                             os.remove(image)
@@ -833,13 +841,8 @@ class SeriesManager(QtCore.QObject):
             return
         self._assign_existing_images_to_show(show)
         seasons = show.get_seasons()
-        for key, image in list(show.season_images.items()):
-            if not os.path.isfile(image):
-                del show.season_images[key]
-                self.changed = True
         # Check if the download is needed
-        if len(seasons) == len(show.season_images.keys()) and \
-           show.image and os.path.isfile(show.image):
+        if show.have_all_season_images() and show.have_cover_image():
             #self.emit(self.UPDATED_SHOW_ART, show) #TODO
             show.showArtChanged.emit()
             return
@@ -847,8 +850,7 @@ class SeriesManager(QtCore.QObject):
         for image in image_choices:
             image_type = image[1]
             url = image[0]
-            if image_type  == 'poster' and \
-               (not show.image or not os.path.isfile(show.image)):
+            if image_type  == 'poster' and not show.have_cover_image():
                 show.downloading_show_image = True
                 #self.emit(self.UPDATED_SHOW_ART, show) #TODO
                 show.showArtChanged.emit()
@@ -860,14 +862,14 @@ class SeriesManager(QtCore.QObject):
                     newImg = img.scaledToWidth(150)
                     newImg.save(image_file)
                 show.set_cover_image(image_file)
+                QtCore.qDebug("T: %s" % image_file)
                 show.downloading_show_image = False
                 self.changed = True
                 #self.emit(self.UPDATED_SHOW_ART, show) #TODO
                 show.showArtChanged.emit()
             elif image_type == 'season':
                 season = image[3]
-                if season in seasons and \
-                   season not in show.season_images.keys():
+                if season in seasons and not show.have_season_image(season):
                     show.downloading_season_image = True
                     #self.emit(self.UPDATED_SHOW_ART, show) #TODO
                     show.showArtChanged.emit()
@@ -879,7 +881,6 @@ class SeriesManager(QtCore.QObject):
                     except Exception as exception:
                         logging.debug(str(exception))
                     else:
-                        show.season_images[season] = image_file
                         #scale if needed
                         img = QtGui.QImage(image_file)
                         if img.width() > 100:
@@ -889,7 +890,7 @@ class SeriesManager(QtCore.QObject):
                     self.changed = True
                     #self.emit(self.UPDATED_SHOW_ART, show) #TODO
                     show.showArtChanged.emit()
-            if show.image and len(show.season_images) == len(seasons):
+            if show.have_cover_image() and show.have_all_season_images():
                 break
 
     def _assign_existing_images_to_show(self, show):
