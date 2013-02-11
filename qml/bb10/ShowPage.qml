@@ -29,4 +29,12 @@ Page {
             }
         }
     }
+    actions: [
+        ActionItem {
+            title: "Refresh"
+            imageSource: "../assets/images/ic_refresh.png"
+            ActionBar.placement: ActionBarPlacement.OnBar
+            onTriggered: series_manager.update_show_episodes(show)
+        }
+    ]
 }
