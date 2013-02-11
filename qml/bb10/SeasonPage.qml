@@ -6,9 +6,8 @@ Page {
     property variant show: undefined
     property string season: ''
     content: Container {
-        Label {
-            id: labelID
-            text: show? show.showName + ' Season ' + season : ''
+        ImageView {
+            imageSource: show ? show.bannerImage : ''
         }
         ListView {
             dataModel: show && season != '' ? show.get_sorted_episode_list_by_season(season) : undefined

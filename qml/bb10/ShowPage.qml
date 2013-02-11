@@ -5,10 +5,10 @@ Page {
     signal seasonSelected(string season)
     property variant show: undefined
     
-    titleBar: TitleBar {
-        title: show? show.showName : ''
-    }
     content: Container {
+        ImageView {
+            imageSource: show ? show.bannerImage : ''
+        }
         ListView {
             dataModel: show ? show.get_seasons_model() : undefined
             property alias show: page.show
