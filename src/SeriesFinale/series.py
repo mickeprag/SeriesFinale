@@ -36,7 +36,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 _ = gettext.gettext
 
-from PySide import QtCore
+from PySide import QtCore, QtGui
 
 class Show(QtCore.QObject):
 
@@ -854,6 +854,11 @@ class SeriesManager(QtCore.QObject):
                 show.showArtChanged.emit()
                 target_file = os.path.join(DATA_DIR, show.get_poster_prefix())
                 image_file = os.path.abspath(image_downloader(url, target_file))
+                #scale if needed
+                img = QtGui.QImage(image_file)
+                if img.width() > 150:
+                    newImg = img.scaledToWidth(150)
+                    newImg.save(image_file)
                 show.set_cover_image(image_file)
                 show.downloading_show_image = False
                 self.changed = True
@@ -875,6 +880,11 @@ class SeriesManager(QtCore.QObject):
                         logging.debug(str(exception))
                     else:
                         show.season_images[season] = image_file
+                        #scale if needed
+                        img = QtGui.QImage(image_file)
+                        if img.width() > 100:
+                            newImg = img.scaledToWidth(100)
+                            newImg.save(image_file)
                     show.downloading_season_image = False
                     self.changed = True
                     #self.emit(self.UPDATED_SHOW_ART, show) #TODO
