@@ -9,5 +9,12 @@ Page {
             id: labelID
             text: episode? episode.title : ''
         }
+        CheckBox {
+            id: watched
+            text: "Watched"
+            onCheckedChanged: episode.isWatched = watched.checked
+            property bool isWatched: episode.isWatched
+            onIsWatchedChanged: watched.checked = episode.isWatched
+        }
     }
 }
