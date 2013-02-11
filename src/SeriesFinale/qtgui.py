@@ -81,8 +81,8 @@ class MainWindow(CApplication):
         settingsWrapper.hideCompletedShowsChanged.connect(self.series_manager.sorted_series_list.reapplyFilter)
         self.showFullScreen()
 
-#    def closeEvent(self, event):
-#        self._exit_cb(event)
+    def closeEvent(self):
+        self._exit_cb()
 
     def _settings_load_finished(self, dummy_arg, error):
         self.series_manager.sorted_series_list.resort()
@@ -91,8 +91,8 @@ class MainWindow(CApplication):
         self.request = None
         self.series_manager.auto_save(True)
 
-    '''@Slot()
-    def _exit_cb(self, event):
+    @Slot()
+    def _exit_cb(self):
         if self.request:
             self.request.stop()
         # If the shows list is empty but the user hasn't deleted
@@ -113,10 +113,9 @@ class MainWindow(CApplication):
         async_worker.queue.put(save_shows_item)
         async_worker.queue.put(save_conf_item)
         async_worker.start()
-        event.ignore()
 
     def _save_finished_cb(self, dummy_arg, error):
-        QApplication.instance().quit()'''
+        pass
 
 class SettingsWrapper(QObject):
     def __init__(self, parent=None):

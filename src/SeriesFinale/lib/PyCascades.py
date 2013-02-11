@@ -12,8 +12,13 @@ class CApplication(QObject):
         super(CApplication, self).__init__()
         try:
             self.app = bb.cascades.Application(sys.argv)
+            self.app.setAutoExit(True)
+            self.app.aboutToQuit.connect(self.closeEvent)
         finally:
             pass
+
+    def closeEvent(self):
+        pass
 
     def exec_(self):
         try:
