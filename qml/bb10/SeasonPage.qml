@@ -16,13 +16,8 @@ Page {
                                                     
             listItemComponents: [
                 ListItemComponent {
-                    type: ""
-                    StandardListItem {
-                        title: ListItem.data.title
-                        description: ''
-                        status: "3"
-                        imageSource: "../assets/images/placeholderimage.png"
-                        //imageSource: ListItemData.coverImage
+                    EpisodeListItem {
+                        episode: ListItem.data
                     }
                 }
             ]
