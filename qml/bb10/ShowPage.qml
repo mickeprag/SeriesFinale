@@ -15,13 +15,11 @@ Page {
                                                     
             listItemComponents: [
                 ListItemComponent {
-                    type: ""
-                    StandardListItem {
+                    SeriesListItem {
                         title: ListItem.view.show.get_season_name(ListItem.data)
-                        description: ''
-                        status: "3"
-                        imageSource: "../assets/images/placeholderimage.png"
-                        //imageSource: ListItemData.coverImage
+                        description: ListItem.view.show.get_season_info_markup(ListItem.data)
+                        width: 100
+                        imageSource: 'file://' + ListItem.view.show.get_season_image(ListItem.data)
                     }
                 }
             ]

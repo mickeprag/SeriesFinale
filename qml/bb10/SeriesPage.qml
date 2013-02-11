@@ -10,10 +10,9 @@ Page {
             listItemComponents: [
                 ListItemComponent {
                     type: ""
-                    StandardListItem {
+                    SeriesListItem {
                         title: ListItemData.showName
                         description: ListItemData.infoMarkup
-                        status: "3"
                         imageSource: ListItemData.coverImage
                     }
                 }
