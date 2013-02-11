@@ -5,14 +5,15 @@ Page {
     signal episodeSelected(variant episode)
     property variant show: undefined
     property string season: ''
+    onShowChanged: listView.dataModel = show.get_sorted_episode_list_by_season(season)
+    onSeasonChanged: listView.dataModel = show.get_sorted_episode_list_by_season(season)
     content: Container {
         ImageView {
             imageSource: show ? show.bannerImage : ''
         }
         ListView {
-            dataModel: show && season != '' ? show.get_sorted_episode_list_by_season(season) : undefined
+            id: listView
             property alias show: page.show
-                                                    
             listItemComponents: [
                 ListItemComponent {
                     EpisodeListItem {

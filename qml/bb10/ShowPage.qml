@@ -4,15 +4,16 @@ Page {
     id: page
     signal seasonSelected(string season)
     property variant show: undefined
+    onShowChanged: listView.dataModel = show.get_seasons_model()
     
     content: Container {
         ImageView {
             imageSource: show ? show.bannerImage : ''
         }
         ListView {
-            dataModel: show ? show.get_seasons_model() : undefined
+            id: listView
             property alias show: page.show
-                                                    
+
             listItemComponents: [
                 ListItemComponent {
                     SeriesListItem {
