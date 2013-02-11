@@ -85,6 +85,20 @@ class Show(QtCore.QObject):
         self.coverImageChanged.emit()
     coverImage = QtCore.Property(str,cover_image,set_cover_image,notify=coverImageChanged)
 
+    bannerImageChanged = QtCore.Signal()
+    def have_banner_image(self):
+        path = os.path.join(DATA_DIR, '%s_banner.jpg' % self.get_poster_prefix())
+        if os.path.exists(path):
+            return True
+        return False
+    def banner_image(self):
+        if not self.have_banner_image():
+            return constants.PLACEHOLDER_IMAGE
+        return os.path.join(DATA_DIR, '%s_banner.jpg' % self.get_poster_prefix())
+    def set_banner_image(self, new_path):
+        self.bannerImageChanged.emit()
+    bannerImage = QtCore.Property(str,banner_image,set_banner_image,notify=bannerImageChanged)
+
     nameChanged = QtCore.Signal()
     def get_name(self):
         return str(self.name)
@@ -842,7 +856,7 @@ class SeriesManager(QtCore.QObject):
         self._assign_existing_images_to_show(show)
         seasons = show.get_seasons()
         # Check if the download is needed
-        if show.have_all_season_images() and show.have_cover_image():
+        if show.have_all_season_images() and show.have_cover_image() and show.have_banner_image():
             #self.emit(self.UPDATED_SHOW_ART, show) #TODO
             show.showArtChanged.emit()
             return
@@ -890,7 +904,11 @@ class SeriesManager(QtCore.QObject):
                     self.changed = True
                     #self.emit(self.UPDATED_SHOW_ART, show) #TODO
                     show.showArtChanged.emit()
-            if show.have_cover_image() and show.have_all_season_images():
+            elif image_type == 'series':
+                target_file = os.path.join(DATA_DIR, '%s_banner' % show.get_poster_prefix())
+                image_file = os.path.abspath(image_downloader(url, target_file))
+                show.set_banner_image(image_file)
+            if show.have_cover_image() and show.have_banner_image() and show.have_all_season_images():
                 break
 
     def _assign_existing_images_to_show(self, show):
