@@ -13,7 +13,7 @@ Page {
                     SeriesListItem {
                         title: ListItemData.showName
                         description: ListItemData.infoMarkup
-                        imageSource: ListItemData.coverImage
+                        imageSource: 'file://' + ListItemData.coverImage
                     }
                 }
             ]
