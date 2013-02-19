@@ -10,6 +10,12 @@ NavigationPane {
         }
         actions: [
             ActionItem {
+                title: "Add show"
+                imageSource: "../assets/images/ic_add.png"
+                ActionBar.placement: ActionBarPlacement.OnBar
+                onTriggered: nav.push(addShow)
+            },
+            ActionItem {
                 title: "Refresh all"
                 imageSource: "../assets/images/ic_refresh.png"
                 ActionBar.placement: ActionBarPlacement.OnBar
@@ -43,6 +49,13 @@ NavigationPane {
         },
         AboutPage {
             id: aboutPage
+        },
+        AddShow {
+            id: addShow
+            onShowAdded: {
+                series_manager.get_complete_show(showName)
+                nav.pop();
+            }
         }
     ]
     
