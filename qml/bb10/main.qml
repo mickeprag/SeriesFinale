@@ -40,6 +40,9 @@ NavigationPane {
 
         SettingsPage {
             id: settingsPage
+        },
+        AboutPage {
+            id: aboutPage
         }
     ]
     
@@ -48,6 +51,11 @@ NavigationPane {
             onTriggered: nav.push(settingsPage)
         }
         actions: [
+            ActionItem {
+                title: "About"
+                imageSource: "../assets/images/ic_info.png"
+                onTriggered: nav.push(aboutPage)
+            }
         ]
     }
 }
