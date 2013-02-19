@@ -232,19 +232,15 @@ class SortedSeasonsList(SortedList):
         if (self.sortOrder == self._settings.DESCENDING_ORDER):
             return int(self.sourceModel().data(left)) > int(self.sourceModel().data(right))
         return int(self.sourceModel().data(left)) < int(self.sourceModel().data(right))
+
 class SortedEpisodesList(SortedList):
-    pass
-'''
     def __init__(self, list, settings, parent=None):
-        QtGui.QSortFilterProxyModel.__init__(self, parent)
+        super(SortedEpisodesList, self).__init__(parent=parent)
         self._settings = settings
-        self.setDynamicSortFilter(True)
         self.sortOrder = self._settings.getConf(self._settings.EPISODES_ORDER_CONF_NAME)
-        self.sort(0)
         self.setSourceModel(list)
 
     def lessThan(self, left, right):
         if (self.sortOrder == self._settings.DESCENDING_ORDER):
             return self.sourceModel().data(left).episode_number > self.sourceModel().data(right).episode_number
         return self.sourceModel().data(left).episode_number < self.sourceModel().data(right).episode_number
-'''
