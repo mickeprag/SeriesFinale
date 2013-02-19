@@ -58,11 +58,9 @@ class MainWindow(CApplication):
                                        fallback = True)
         _ = language.gettext'''
 
-        self.series_manager = SeriesManager()
         self.settings = Settings()
-        load_conf_item = AsyncItem(self.settings.load,
-                                   (constants.SF_CONF_FILE,),
-                                   self._settings_load_finished)
+        self.settings.load(constants.SF_CONF_FILE)
+        self.series_manager = SeriesManager()
         self.series_manager.updateShowEpisodesComplete.connect(self.updateShowEpisodesComplete)
         self.series_manager.updateShowsCallComplete.connect(self.updateShowsCallComplete)
         load_shows_item = AsyncItem(self.series_manager.load,
@@ -70,7 +68,6 @@ class MainWindow(CApplication):
                                     self._load_finished)
 
         self.request = AsyncWorker(True)
-        self.request.queue.put(load_conf_item)
         self.request.queue.put(load_shows_item)
         self.request.start()
 
@@ -134,6 +131,7 @@ class MainWindow(CApplication):
 class SettingsWrapper(QObject):
     def __init__(self, parent=None):
         QObject.__init__(self, parent)
+        self._hideCompletedShows = self.getHideCompletedShows()
 
     addSpecialSeasonsChanged = Signal()
     def getAddSpecialSeasons(self):
@@ -147,6 +145,8 @@ class SettingsWrapper(QObject):
     def getHideCompletedShows(self):
         return Settings().getConf(Settings.HIDE_COMPLETED_SHOWS)
     def setHideCompletedShows(self, add):
+        if self._hideCompletedShows == add:
+            return
         Settings().setConf(Settings.HIDE_COMPLETED_SHOWS, add)
         self.hideCompletedShowsChanged.emit()
     hideCompletedShows = Property(bool,getHideCompletedShows,setHideCompletedShows,notify=hideCompletedShowsChanged)
