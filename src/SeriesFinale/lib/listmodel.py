@@ -33,13 +33,11 @@ class ListModel(bb.cascades.DataModel):
         self._itemType = ''
 
     def append(self, show):
-        if (show.parent() == None):
-        #    qDebug("Reparent item")
-            #If we do not have a parent the item the ListView
-            #will reparent the object which will not work.
-            show.setParent(self)
-        #qDebug("Parent: %s" % str(show.parent()))
-        #qDebug(show.parent())
+        if isinstance(show, QObject):
+            if (show.parent() == None):
+                #If we do not have a parent the item the ListView
+                #will reparent the object which will not work.
+                show.setParent(self)
         self._items.append(show)
         self.itemAdded.emit([len(self._items)-1])
 
