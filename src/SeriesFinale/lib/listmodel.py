@@ -167,25 +167,9 @@ class SortedList(bb.cascades.DataModel):
 class SortedSeriesList(SortedList):
     def __init__(self, settings, parent=None):
         super(SortedSeriesList, self).__init__(parent=parent)
-        #self.setItemType('series')
-
-'''    def __init__(self, settings, parent=None):
-        QtGui.QSortFilterProxyModel.__init__(self, parent)
         self._settings = settings
-        self.sortOrder = self._settings.getConf(self._settings.SHOWS_SORT)
         self.hideCompleted = self._settings.getConf(self._settings.HIDE_COMPLETED_SHOWS)
-        self.setDynamicSortFilter(True)
-        self.sort(0)
-
-    def resort(self):
         self.sortOrder = self._settings.getConf(self._settings.SHOWS_SORT)
-        self.hideCompleted = self._settings.getConf(self._settings.HIDE_COMPLETED_SHOWS)
-        self.invalidate()
-
-    def reapplyFilter(self):
-        self.resort()
-        #This seems to be needed for QML to reload the filter. invalidateFilter doesn't seem to work
-        self.reset()
 
     def filterAcceptsRow(self, sourceRow, sourceParent):
         if not self.hideCompleted:
@@ -224,7 +208,18 @@ class SortedSeriesList(SortedList):
         most_recent = (episode1 or episode2).get_most_recent(episode2)
         if not most_recent:
             return str(leftData) < str(rightData)
-        return episode1 == most_recent'''
+        return episode1 == most_recent
+
+'''    def resort(self):
+        self.sortOrder = self._settings.getConf(self._settings.SHOWS_SORT)
+        self.hideCompleted = self._settings.getConf(self._settings.HIDE_COMPLETED_SHOWS)
+        self.invalidate()
+
+    def reapplyFilter(self):
+        self.resort()
+        #This seems to be needed for QML to reload the filter. invalidateFilter doesn't seem to work
+        self.reset()'''
+
 
 class SortedSeasonsList(SortedList):
     def __init__(self, l, settings, parent=None):
