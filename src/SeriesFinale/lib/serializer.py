@@ -45,6 +45,8 @@ def deserialize_from_old_format(contents):
 class ShowDecoder(json.JSONEncoder):
 
     def default(self, show):
+        if type(show) == bytes:
+            return show.decode("utf-8")
         show_json = dict(show.__dict__)
         show_json['json_type'] = 'show'
         if 'downloading_season_image' in show_json:
