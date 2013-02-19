@@ -40,6 +40,8 @@ class MainWindow(CApplication):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.toast = bb.system.SystemToast()
+        self.toast.setPosition(bb.system.SystemUiPosition.TopCenter)
 
         # i18n
         '''languages = []
@@ -61,6 +63,8 @@ class MainWindow(CApplication):
         load_conf_item = AsyncItem(self.settings.load,
                                    (constants.SF_CONF_FILE,),
                                    self._settings_load_finished)
+        self.series_manager.updateShowEpisodesComplete.connect(self.updateShowEpisodesComplete)
+        self.series_manager.updateShowsCallComplete.connect(self.updateShowsCallComplete)
         load_shows_item = AsyncItem(self.series_manager.load,
                                     (constants.SF_DB_FILE,),
                                     self._load_finished)
@@ -83,6 +87,16 @@ class MainWindow(CApplication):
 
     def closeEvent(self):
         self._exit_cb()
+
+    @Slot(QObject)
+    def updateShowEpisodesComplete(self, show):
+        self.toast.setBody('Updated "%s"' % show.get_name())
+        self.toast.show()
+
+    @Slot()
+    def updateShowsCallComplete(self):
+        self.toast.setBody('Finished updating the shows')
+        self.toast.show()
 
     def _settings_load_finished(self, dummy_arg, error):
         self.series_manager.sorted_series_list.resort()
