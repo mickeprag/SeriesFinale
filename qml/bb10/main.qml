@@ -8,6 +8,14 @@ NavigationPane {
             showPage.show = show
             nav.push(showPage);
         }
+        actions: [
+            ActionItem {
+                title: "Refresh all"
+                imageSource: "../assets/images/ic_refresh.png"
+                ActionBar.placement: ActionBarPlacement.OnBar
+                onTriggered: series_manager.update_all_shows_episodes()
+            }
+        ]
     }
 
     attachedObjects: [
@@ -40,11 +48,6 @@ NavigationPane {
             onTriggered: nav.push(settingsPage)
         }
         actions: [
-            ActionItem {
-                title: "Refresh all"
-                imageSource: "../assets/images/ic_refresh.png"
-                onTriggered: series_manager.update_all_shows_episodes()
-            }
         ]
     }
 }
