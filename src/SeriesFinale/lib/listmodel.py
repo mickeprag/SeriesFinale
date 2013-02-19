@@ -75,6 +75,10 @@ class ListModel(bb.cascades.DataModel):
             #qDebug("returned")
             pass
 
+    # For source compatibility with Qt
+    def index(self, sourceRow, sourceColumn, sourceParent):
+        return sourceRow
+
     def list(self):
         return self._items
 
