@@ -403,10 +403,10 @@ class Episode(QtCore.QObject):
     ratingChanged = QtCore.Signal()
     def get_rating(self):
         try:
-            return round(float(self.rating))
+            return str(float(self.rating))
         except:
-            return 0
-    episodeRating = QtCore.Property(int,get_rating,notify=ratingChanged)
+            return '0'
+    episodeRating = QtCore.Property(str,get_rating,notify=ratingChanged)
 
     titleChanged = QtCore.Signal()
     def get_title(self):
