@@ -605,6 +605,11 @@ class SeriesManager(QtCore.QObject):
             self.isUpdating = False
             self.isLoading = False
 
+    versionChanged = QtCore.Signal()
+    def get_version(self):
+        return constants.SF_VERSION
+    version = QtCore.Property(str,get_version,notify=versionChanged)
+
     busyChanged = QtCore.Signal()
     def get_busy(self):
         return self.isUpdating or self.isLoading
