@@ -142,7 +142,7 @@ class Show(QtCore.QObject):
     @QtCore.Slot(result=QtCore.QObject)
     def get_seasons_model(self):
         if self._seasonsList == None:
-            self._seasonsList = ListModel(self.get_seasons())
+            self._seasonsList = SortedSeasonsList(ListModel(self.get_seasons()), Settings(), self)
         return self._seasonsList
 
     def get_seasons(self):
@@ -176,7 +176,7 @@ class Show(QtCore.QObject):
     @QtCore.Slot(str,result=QtCore.QObject)
     def get_sorted_episode_list_by_season(self, season):
         if season not in self._sorted_episode_list_by_season:
-            self._sorted_episode_list_by_season[season] = ListModel(self.get_episode_list_by_season(season))
+            self._sorted_episode_list_by_season[season] = SortedEpisodesList(ListModel(self.get_episode_list_by_season(season)), Settings(), self)
         return self._sorted_episode_list_by_season[season]
 
     def update_episode_list(self, episode_list):
@@ -194,6 +194,8 @@ class Show(QtCore.QObject):
                    self.is_special_season(episode.season_number):
                     continue
                 self.episode_list.append(episode)
+                if episode.season_number in self._sorted_episode_list_by_season:
+                    self._sorted_episode_list_by_season[episode.season_number].sourceModel().append(episode)
                 series_manager.changed = True
 
     def delete_episode(self, episode):
@@ -582,7 +584,7 @@ class SeriesManager(QtCore.QObject):
             QtCore.QObject.__init__(self)
 
             self.series_list = ListModel()
-            self.sorted_series_list = SortedSeriesList(Settings(), self)
+            self.sorted_series_list = SortedSeriesList(Settings())
             self.sorted_series_list.setSourceModel(self.series_list)
 
             self.thetvdb = thetvdbapi.TheTVDB(TVDB_API_KEY)
