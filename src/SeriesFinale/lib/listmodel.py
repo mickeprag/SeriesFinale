@@ -104,27 +104,65 @@ class ListModel(bb.cascades.DataModel):
     def __getitem__(self, key):
         return self._items[key]
 
-class SortedList(ListModel):
+class SortedList(bb.cascades.DataModel):
     def setSourceModel(self, model):
-        qDebug("Set sourcemodel")
         self.model = model
-        model.itemAdded.connect(self.itemAdded)
+        self._sortOrder = []
+        model.itemAdded.connect(self._itemAdded)
+        for index, data in enumerate(model):
+            self._itemAdded([index])
 
     def childCount(self, indexPath):
-        return self.model.childCount(indexPath)
+        return len(self._sortOrder)
 
     @Slot(int,result=QObject)
     def data(self, indexPath):
-        return self.model.data(indexPath)
+        return self.model.data(self.mapToSource(indexPath))
 
-    def childCount(self, indexPath):
-        #qDebug("Return len %d" % len(self._items))
-        return self.model.childCount(indexPath)
+    @Slot(int,result=str)
+    def dataStr(self,indexPath):
+        return self.model.dataStr(self.mapToSource(indexPath))
+
+    def hasChildren(self, indexPath):
+        return False
+
+    def mapToSource(self, index):
+        if type(index) == list:
+            index = index[0]
+        if index >= len(self._sortOrder):
+            # Should not happen
+            return 0
+        return self._sortOrder[index]
+
+    def sourceModel(self):
+        return self.model
+
+    @Slot(list)
+    def _itemAdded(self, indexPath):
+        index = indexPath[0]
+        if not self.filterAcceptsRow(index, 0):
+            return
+        before = None
+        left = index
+        for i, right in enumerate(self._sortOrder):
+            if self.lessThan(left, right):
+                before = i
+                break
+        if before == None:
+            self._sortOrder.append(index)
+            self.itemAdded.emit([len(self._sortOrder)-1])
+        else:
+            self._sortOrder.insert(before, index)
+            self.itemAdded.emit([index])
 
     def resort(self):
         pass
     def reapplyFilter(self):
         pass
+    def filterAcceptsRow(self, sourceRow, sourceParent):
+        return True
+    def lessThan(self, left, right):
+        return True
 
 class SortedSeriesList(SortedList):
     def __init__(self, settings, parent=None):
