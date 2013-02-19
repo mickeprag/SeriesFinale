@@ -34,6 +34,8 @@ class ListModel(bb.cascades.DataModel):
 
     def append(self, show):
         if isinstance(show, QObject):
+            if show.thread() != self.thread():
+                show.moveToThread(self.thread())
             if (show.parent() == None):
                 #If we do not have a parent the item the ListView
                 #will reparent the object which will not work.
