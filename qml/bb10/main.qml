@@ -28,10 +28,17 @@ NavigationPane {
         },
         EpisodePage {
             id: episodePage
+        },
+
+        SettingsPage {
+            id: settingsPage
         }
     ]
     
     Menu.definition: MenuDefinition {
+        settingsAction: SettingsActionItem {
+            onTriggered: nav.push(settingsPage)
+        }
         actions: [
             ActionItem {
                 title: "Refresh all"
