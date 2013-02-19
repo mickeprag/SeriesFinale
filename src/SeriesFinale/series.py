@@ -728,8 +728,8 @@ class SeriesManager(QtCore.QObject):
 
     def _set_show_episodes_complete_cb(self, show, images_worker, last_call, tvdbcompleteshow, error):
         if not error and tvdbcompleteshow:
-            episode_list = ListModel([self._convert_thetvdbepisode_to_episode(tvdb_ep,show) \
-                            for tvdb_ep in tvdbcompleteshow[1]])
+            episode_list = [self._convert_thetvdbepisode_to_episode(tvdb_ep,show) \
+                            for tvdb_ep in tvdbcompleteshow[1]]
             show.update_episode_list(episode_list)
         self.updateShowEpisodesComplete.emit(show)
         show.episodesListUpdated.emit()
