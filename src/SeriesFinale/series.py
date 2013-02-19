@@ -362,11 +362,12 @@ class Episode(QtCore.QObject):
     def __init__(self, name, show, episode_number, season_number = '1',
                  overview = None, director = None, guest_stars = [],
                  rating = None, writer = None, watched = False,
-                 air_date = '', id = -1):
+                 air_date = '', id = -1, image = ''):
         QtCore.QObject.__init__(self)
         self.id = id
         self.name = name
         self.show = show
+        self.image = image
         self.episode_number = episode_number
         self.season_number = season_number
         self.overview = overview
@@ -379,6 +380,19 @@ class Episode(QtCore.QObject):
             self.air_date = datetime.strptime(air_date, '%Y-%m-%d').date()
         except:
             self.air_date = ''
+
+    coverImageChanged = QtCore.Signal()
+    def cover_image(self):
+        path = os.path.join(DATA_DIR, '%s_episode_S%02dE%02d' % (self.show.thetvdb_id, int(self.season_number), int(self.episode_number)))
+        path = os.path.abspath(path)
+        if os.path.exists("%s.jpg" % path):
+            return "%s.jpg" % path
+        if self.image == '':
+            return constants.PLACEHOLDER_IMAGE
+        url = "http://www.thetvdb.com/banners/%s" % (self.image)
+        image_file = image_downloader(url, path)
+        return image_file
+    coverImage = QtCore.Property(str,cover_image,notify=coverImageChanged)
 
     def get_episode_show_number(self):
         return '%sx%02d' % (self.season_number, int(self.episode_number))
@@ -439,11 +453,13 @@ class Episode(QtCore.QObject):
         self.writer = episode.writer or self.writer
         self.watched = episode.watched or self.watched
         self.air_date = episode.air_date or self.air_date
+        self.image = episode.image or self.image
         #TODO: Maybe we should check which really changed and only emit those signals?
         self.ratingChanged.emit()
         self.titleChanged.emit()
         self.airDateTextChanged.emit()
         self.watchedChanged.emit()
+        self.coverImageChanged.emit()
 
     airDateTextChanged = QtCore.Signal()
     def get_air_date_text(self):
@@ -812,6 +828,7 @@ class SeriesManager(QtCore.QObject):
         episode_obj.rating = thetvdb_episode.rating
         episode_obj.writer = thetvdb_episode.writer
         episode_obj.air_date = thetvdb_episode.first_aired or ''
+        episode_obj.image = thetvdb_episode.image or ''
         return episode_obj
 
     def add_show(self, show):
