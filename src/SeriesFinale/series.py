@@ -350,15 +350,6 @@ class Show(QtCore.QObject):
             prefix = '%s%s' % (prefix, str(season))
         return prefix
 
-    def assign_image_to_season(self, image):
-        basename = os.path.basename(image)
-        prefix, extension = os.path.splitext(basename)
-        for season in self.get_seasons():
-            # TODO: season_images no longer exists
-            if prefix.endswith(season) and not self.season_images.get(season):
-                self.season_images[season] = image
-                break
-
     def is_special_season(self, season_number):
         try:
             season_number = int(season_number)
@@ -860,7 +851,6 @@ class SeriesManager(QtCore.QObject):
         thetvdb_id = show.thetvdb_id
         if thetvdb_id == -1:
             return
-        self._assign_existing_images_to_show(show)
         seasons = show.get_seasons()
         # Check if the download is needed
         if show.have_all_season_images() and show.have_cover_image() and show.have_banner_image():
@@ -917,15 +907,6 @@ class SeriesManager(QtCore.QObject):
                 show.set_banner_image(image_file)
             if show.have_cover_image() and show.have_banner_image() and show.have_all_season_images():
                 break
-
-    def _assign_existing_images_to_show(self, show):
-        for archive in os.listdir(DATA_DIR):
-            if archive.startswith(show.get_season_poster_prefix()):
-                show.assign_image_to_season(os.path.join(DATA_DIR, archive))
-                self.changed = True
-            elif archive.startswith(show.get_poster_prefix()):
-                show.set_cover_image(os.path.abspath(os.path.join(DATA_DIR, archive)))
-                self.changed = True
 
     def save(self, save_file_path):
         if not self.changed:
