@@ -7,8 +7,20 @@ Page {
     onShowChanged: listView.dataModel = show.get_seasons_model()
     
     content: Container {
-        ImageView {
-            imageSource: show ? show.bannerImage : ''
+        Container {
+            layout: DockLayout {
+            }
+            ImageView {
+                id: banner
+                imageSource: show ? show.bannerImage : ''
+            }
+            ActivityIndicator {
+                verticalAlignment: VerticalAlignment.Center
+                horizontalAlignment: HorizontalAlignment.Right
+                running: true
+                preferredHeight: 150
+                visible: show ? show.busy : false
+            }
         }
         ListView {
             id: listView

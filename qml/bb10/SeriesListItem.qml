@@ -4,6 +4,7 @@ Container {
     property alias title: titleLabel.text
     property alias description: descriptionLabel.text
     property alias imageSource: coverImage.imageSource
+    property bool busy: false
     property int width: 150
     
     preferredHeight: coverImage.height
@@ -12,12 +13,23 @@ Container {
         layout: StackLayout {
             orientation: LayoutOrientation.LeftToRight
         }
-        ImageView {
-            id: coverImage
-            verticalAlignment: VerticalAlignment.Center
-            preferredWidth: width
-            minWidth: width
-            scalingMethod: ScalingMethod.AspectFit
+        Container {
+            layout: DockLayout {
+            }
+            ImageView {
+                id: coverImage
+                verticalAlignment: VerticalAlignment.Center
+                preferredWidth: width
+                minWidth: width
+                scalingMethod: ScalingMethod.AspectFit
+            }
+            ActivityIndicator {
+                running: busy
+                visible: busy
+                preferredWidth: width
+                horizontalAlignment: HorizontalAlignment.Center
+                verticalAlignment: VerticalAlignment.Center
+            }
         }
         Container {
             leftPadding: 25

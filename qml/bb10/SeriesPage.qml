@@ -14,6 +14,7 @@ Page {
                         title: ListItemData.showName
                         description: ListItemData.infoMarkup
                         imageSource: 'file://' + ListItemData.coverImage
+                        busy: ListItemData.busy
                     }
                 }
             ]
