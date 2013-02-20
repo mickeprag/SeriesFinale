@@ -95,11 +95,8 @@ class ListModel(bb.cascades.DataModel):
         return len(self._items)
 
     def __delitem__(self, index):
-        #TODO
-        '''self.beginRemoveRows(QtCore.QModelIndex(), index, index)
         del self._items[index]
-        self.endRemoveRows()'''
-        pass
+        self.itemRemoved.emit([index])
 
     def __getitem__(self, key):
         return self._items[key]
@@ -109,6 +106,7 @@ class SortedList(bb.cascades.DataModel):
         self.model = model
         self._sortOrder = []
         model.itemAdded.connect(self._itemAdded)
+        model.itemRemoved.connect(self._itemRemoved)
         for index, data in enumerate(model):
             self._itemAdded([index])
 
@@ -154,6 +152,18 @@ class SortedList(bb.cascades.DataModel):
         else:
             self._sortOrder.insert(before, index)
             self.itemAdded.emit([index])
+
+    @Slot(list)
+    def _itemRemoved(self, indexPath):
+        sourceIndex = indexPath[0]
+        if sourceIndex not in self._sortOrder:
+            return
+        index = self._sortOrder.index(sourceIndex)
+        del self._sortOrder[index]
+        self.itemRemoved.emit([index])
+        for i, item in enumerate(self._sortOrder):
+            if item > sourceIndex:
+                self._sortOrder[i] = self._sortOrder[i]-1
 
     def resort(self):
         pass

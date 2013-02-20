@@ -840,13 +840,8 @@ class SeriesManager(QtCore.QObject):
 
     @QtCore.Slot(QtCore.QObject)
     def delete_show(self, show):
-        for i in xrange(len(self.series_list)):
+        for i in range(len(self.series_list)):
             if self.series_list[i] == show:
-                if not self._get_shows_from_id:
-                    # TODO: season_images no longer exists
-                    for image in [show.image] + show.season_images.values():
-                        if os.path.isfile(image):
-                            os.remove(image)
                 del self.series_list[i]
                 self.changed = True
                 self.have_deleted = True
