@@ -10,6 +10,9 @@ Page {
             function deleteShow(show) {
                 series_manager.delete_show(show)
             }
+            function updateShow(show) {
+                series_manager.update_show_episodes(show)
+            }
             listItemComponents: [
                 ListItemComponent {
                     type: ""
@@ -22,6 +25,11 @@ Page {
                         contextActions: [
                             ActionSet {
                                 title: ListItemData.showName
+                                ActionItem {
+                                    title: "Refresh show"
+                                    imageSource: "../assets/images/ic_refresh.png"
+                                    onTriggered: itm.ListItem.view.updateShow(itm.ListItem.data)
+                                }
                                 DeleteActionItem {
                                     title: "Delete show"
                                     onTriggered: itm.ListItem.view.deleteShow(itm.ListItem.data)
