@@ -44,12 +44,9 @@ class ListModel(bb.cascades.DataModel):
         self.itemAdded.emit([len(self._items)-1])
 
     def clear(self):
-        qDebug("Clearing")
-        '''if not self._items:
-            return
-        self.beginRemoveRows(QtCore.QModelIndex(), 0, len(self._items)-1)
-        self._items = []
-        self.endRemoveRows()'''
+        # Since the signal DataModel::itemChanged doesn't work in PyCascades we have to do it this way instead
+        while len(self):
+            del self[0]
 
     def childCount(self, indexPath):
         #qDebug("Return len %d" % len(self._items))
