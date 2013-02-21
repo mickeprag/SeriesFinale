@@ -23,7 +23,7 @@ import urllib.request, urllib.error, urllib.parse
 import datetime
 import re
 
-import xml.etree.cElementTree as ET
+import xml.etree.ElementTree as ET
 
 class TheTVDB(object):
     def __init__(self, api_key):
@@ -152,8 +152,6 @@ class TheTVDB(object):
         """Convert a thetvdb date string into a datetime.date object."""
         first_aired = None
         try:
-            if type(date_string) == bytes:
-                date_string = date_string.decode("utf-8")
             first_aired = datetime.date(*list(map(int, date_string.split("-"))))
         except ValueError:
             pass
