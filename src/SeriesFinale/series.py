@@ -211,6 +211,11 @@ class Show(QtCore.QObject):
         episodes = self.get_episode_list_by_season(season)
         for episode in episodes:
             self.delete_episode(episode)
+        if self._seasonsList is not None:
+            model = self._seasonsList.sourceModel()
+            i = model.list().index(season)
+            if i:
+                del model[i]
         self.infoMarkupChanged.emit()
 
     @QtCore.Slot(str)
