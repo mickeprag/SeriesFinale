@@ -558,6 +558,9 @@ class SeriesManager(QtCore.QObject):
     #SHOW_LIST_CHANGED_SIGNAL = 'show-list-changed'
     showListChanged = QtCore.Signal()
 
+    beginAddShow = QtCore.Signal(str)
+    endAddShow = QtCore.Signal(str)
+
    # __gsignals__ = {GET_FULL_SHOW_COMPLETE_SIGNAL: (gobject.SIGNAL_RUN_LAST,
    #                                                 gobject.TYPE_NONE,
    #                                                 (gobject.TYPE_PYOBJECT,
@@ -768,6 +771,7 @@ class SeriesManager(QtCore.QObject):
                                self._get_complete_show_finished_cb)
         async_worker.queue.put(async_item)
         async_worker.start()
+        self.beginAddShow.emit(show_name)
 
     def _get_complete_show_from_id(self, show_id, language):
         tvdb_show_episodes = self.thetvdb.get_show_and_episodes(show_id, language)
@@ -799,6 +803,7 @@ class SeriesManager(QtCore.QObject):
                                None,)
         async_worker.queue.put(async_item)
         async_worker.start()
+        self.endAddShow.emit(show.name)
 
     def get_show_by_id(self, show_id):
         for show in self.series_list:
@@ -841,7 +846,7 @@ class SeriesManager(QtCore.QObject):
             show.id = self._get_id_for_show()
         self.series_list.append(show)
         self.changed = True
-        self.emit(self.SHOW_LIST_CHANGED_SIGNAL)
+        #self.emit(self.SHOW_LIST_CHANGED_SIGNAL)
 
     @QtCore.Slot(QtCore.QObject)
     def delete_show(self, show):

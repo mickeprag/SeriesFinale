@@ -63,6 +63,8 @@ class MainWindow(CApplication):
         self.series_manager = SeriesManager()
         self.series_manager.updateShowEpisodesComplete.connect(self.updateShowEpisodesComplete)
         self.series_manager.updateShowsCallComplete.connect(self.updateShowsCallComplete)
+        self.series_manager.beginAddShow.connect(self.beginAddShow)
+        self.series_manager.endAddShow.connect(self.endAddShow)
         load_shows_item = AsyncItem(self.series_manager.load,
                                     (constants.SF_DB_FILE,),
                                     self._load_finished)
@@ -92,6 +94,16 @@ class MainWindow(CApplication):
     @Slot()
     def updateShowsCallComplete(self):
         self.toast.setBody('Finished updating the shows')
+        self.toast.show()
+
+    @Slot(str)
+    def beginAddShow(self, showName):
+        self.toast.setBody('Adding show "%s"' % showName)
+        self.toast.show()
+
+    @Slot(str)
+    def endAddShow(self, showName):
+        self.toast.setBody('Show "%s" added' % showName)
         self.toast.show()
 
     def _settings_load_finished(self, dummy_arg, error):
