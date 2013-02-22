@@ -148,7 +148,7 @@ class SortedList(bb.cascades.DataModel):
             self.itemAdded.emit([len(self._sortOrder)-1])
         else:
             self._sortOrder.insert(before, index)
-            self.itemAdded.emit([index])
+            self.itemAdded.emit([before])
 
     @Slot(list)
     def _itemRemoved(self, indexPath):
