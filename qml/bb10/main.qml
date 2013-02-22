@@ -36,6 +36,7 @@ NavigationPane {
         SeasonPage {
             id: seasonPage
             onEpisodeSelected: {
+                episodePage.show = show
                 episodePage.episode = episode
                 nav.push(episodePage)
             }
