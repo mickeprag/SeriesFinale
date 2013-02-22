@@ -200,7 +200,7 @@ class Show(QtCore.QObject):
 
     def delete_episode(self, episode):
         series_manager = SeriesManager()
-        for i in xrange(len(self.episode_list)):
+        for i in range(len(self.episode_list)):
             if self.episode_list[i] == episode:
                 del self.episode_list[i]
                 series_manager.changed = True
