@@ -56,6 +56,11 @@ Page {
                 }
             }
         }
+        Label {
+            text: "<strong>Developed by:</strong> Micke Prag<br />This port is based on the initial work made by Joaquim Rocha"
+            multiline: true
+            textFormat: TextFormat.Html
+        }
         Divider {
         }
         ScrollView {
