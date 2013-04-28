@@ -31,6 +31,7 @@ Page {
             ]
             onTriggered: {
                 showAdded(dataModel.dataStr(indexPath))
+                searchTextField.text = ''
             }
         }
     }
