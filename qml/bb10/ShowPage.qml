@@ -7,6 +7,7 @@ Page {
     onShowChanged: listView.dataModel = show.get_seasons_model()
     
     content: Container {
+        background: nav.background
         Container {
             layout: DockLayout {
             }

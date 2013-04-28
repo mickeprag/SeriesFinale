@@ -5,6 +5,7 @@ Page {
     property variant currentShow: 42
     
     content: Container {
+        background: nav.background
         ListView {
             dataModel: seriesList
             function deleteShow(show) {

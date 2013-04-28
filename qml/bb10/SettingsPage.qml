@@ -3,6 +3,7 @@ import bb.cascades 1.0
 Page {
     id: page
     content: Container {
+        background: nav.background
         Label {
             text: "Sort shows by:"
             textStyle.fontSize: FontSize.XLarge

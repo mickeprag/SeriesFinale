@@ -7,6 +7,7 @@ Page {
     }
 
     content: Container {
+        background: nav.background
         TextField {
             id: searchTextField
             hintText: "Search"

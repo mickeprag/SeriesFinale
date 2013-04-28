@@ -8,6 +8,7 @@ Page {
     onShowChanged: listView.dataModel = show.get_sorted_episode_list_by_season(season)
     onSeasonChanged: listView.dataModel = show.get_sorted_episode_list_by_season(season)
     content: Container {
+        background: nav.background
         ImageView {
             imageSource: show ? show.bannerImage : ''
         }

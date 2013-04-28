@@ -17,6 +17,7 @@ Page {
 'along with SeriesFinale.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.'
 
     content: Container {
+        background: nav.background
         topPadding: 30
         leftPadding: 15
         rightPadding: 15

@@ -2,6 +2,7 @@ import bb.cascades 1.0
 
 NavigationPane {
     id: nav
+    property alias background: tile.imagePaint
     SeriesPage {
         id: seriesPage
         onShowSelected: {
@@ -57,6 +58,11 @@ NavigationPane {
                 series_manager.get_complete_show(showName)
                 nav.pop();
             }
+        },
+        ImagePaintDefinition {
+            id: tile
+            repeatPattern: RepeatPattern.XY
+            imageSource: "../assets/images/SeriesFinale_bg.amd"
         }
     ]
     
