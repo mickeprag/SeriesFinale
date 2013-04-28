@@ -3,9 +3,32 @@ import bb.cascades 1.0
 Page {
     signal showSelected(variant show)
     property variant currentShow: 42
-    
     content: Container {
         background: nav.background
+        layout: DockLayout {}
+        Container {
+            horizontalAlignment: HorizontalAlignment.Center
+            visible: seriesList.length == 0
+            ImageView {
+                imageSource: "../assets/images/SeriesFinale_logo.png"
+                verticalAlignment: VerticalAlignment.Center
+                horizontalAlignment: HorizontalAlignment.Center
+                scalingMethod: ScalingMethod.AspectFit
+            }
+            ImageView {
+                imageSource: "../assets/images/SeriesFinale_intro.png"
+                verticalAlignment: VerticalAlignment.Bottom
+                horizontalAlignment: HorizontalAlignment.Center
+                scalingMethod: ScalingMethod.AspectFit
+                visible: !series_manager.busy
+            }
+            ActivityIndicator {
+                running: true
+                horizontalAlignment: HorizontalAlignment.Center
+                visible: series_manager.busy
+                preferredWidth: 100
+            }
+        }
         ListView {
             dataModel: seriesList
             function deleteShow(show) {
