@@ -19,7 +19,7 @@
 ###########################################################################
 
 from PySide.QtCascades import bb
-from PySide.QtCore import qDebug, QObject, Slot, QThread
+from PySide.QtCore import qDebug, QObject, Slot, QThread, Signal, Property
 
 import sys, traceback
 
@@ -103,12 +103,16 @@ class SortedList(bb.cascades.DataModel):
         self.model = model
         self._sortOrder = []
         model.itemAdded.connect(self._itemAdded)
+        model.itemAdded.connect(self.lengthChanged)
         model.itemRemoved.connect(self._itemRemoved)
+        model.itemRemoved.connect(self.lengthChanged)
         for index, data in enumerate(model):
             self._itemAdded([index])
 
-    def childCount(self, indexPath):
+    def childCount(self, indexPath = None):
         return len(self._sortOrder)
+    lengthChanged = Signal()
+    length = Property(int,childCount,notify=lengthChanged)
 
     @Slot(int,result=QObject)
     def data(self, indexPath):
