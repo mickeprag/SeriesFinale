@@ -856,6 +856,12 @@ class SeriesManager(QtCore.QObject):
 
     @QtCore.Slot(QtCore.QObject)
     def delete_show(self, show):
+        dialog = bb.system.SystemDialog('Delete', 'Cancel')
+        dialog.setTitle('Delete?')
+        dialog.setBody('This will delete the selected show.')
+        dialog.exec_()
+        if dialog.result() != bb.system.SystemUiResult.Type.ConfirmButtonSelection:
+            return
         for i in range(len(self.series_list)):
             if self.series_list[i] == show:
                 del self.series_list[i]
