@@ -20,7 +20,7 @@
     <asset path="PySide">PySide</asset>
     <asset path="lib">lib</asset>
 
-    <action system="true">run_native</action>
+    <permission system="true">run_native</permission>
     <env var="CASCADES_THEME" value="dark"/>
     <env var="PYTHONPATH" value="app/python" />
     <env var="LD_LIBRARY_PATH" value="app/python/lib:/usr/lib/qt4/lib"/>
