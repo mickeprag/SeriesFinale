@@ -21,6 +21,7 @@
     <asset path="lib">lib</asset>
 
     <permission system="true">run_native</permission>
+    <permission>access_internet</permission>
     <env var="CASCADES_THEME" value="dark"/>
     <env var="PYTHONPATH" value="app/python" />
     <env var="LD_LIBRARY_PATH" value="app/python/lib:/usr/lib/qt4/lib"/>
