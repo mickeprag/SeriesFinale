@@ -208,6 +208,12 @@ class Show(QtCore.QObject):
 
     @QtCore.Slot(str)
     def delete_season(self, season):
+        dialog = bb.system.SystemDialog('Delete', 'Cancel')
+        dialog.setTitle('Delete?')
+        dialog.setBody('This will delete the selected season.')
+        dialog.exec_()
+        if dialog.result() != bb.system.SystemUiResult.Type.ConfirmButtonSelection:
+            return
         episodes = self.get_episode_list_by_season(season)
         for episode in episodes:
             self.delete_episode(episode)

@@ -32,6 +32,10 @@ Page {
             function markNone(season) {
                 show.mark_all_episodes_as_not_watched(season)
             }
+            function deleteSeason(season) {
+                show.delete_season(season)
+                listView.dataModel = show.get_seasons_model()
+            }
 
             listItemComponents: [
                 ListItemComponent {
@@ -54,6 +58,10 @@ Page {
                                     title: "Mark none as watched"
                                     imageSource: "../assets/images/ic_select_none.png"
                                     onTriggered: itm.ListItem.view.markNone(itm.ListItem.data)
+                                }
+                                DeleteActionItem {
+                                    title: "Delete season"
+                                    onTriggered: itm.ListItem.view.deleteSeason(itm.ListItem.data)
                                 }
                             }
                         ]
