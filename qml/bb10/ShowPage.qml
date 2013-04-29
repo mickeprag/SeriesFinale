@@ -26,14 +26,37 @@ Page {
         ListView {
             id: listView
             property alias show: page.show
+            function markAll(season) {
+                show.mark_all_episodes_as_watched(season)
+            }
+            function markNone(season) {
+                show.mark_all_episodes_as_not_watched(season)
+            }
 
             listItemComponents: [
                 ListItemComponent {
                     SeriesListItem {
+                        id: itm
                         title: ListItem.view.show.get_season_name(ListItem.data)
                         description: ListItem.view.show.get_season_info_markup(ListItem.data)
                         width: 100
                         imageSource: 'file://' + ListItem.view.show.get_season_image(ListItem.data)
+                        contextActions: [
+                            ActionSet {
+                                title: itm.ListItem.view.show.showName
+                                subtitle: itm.ListItem.view.show.get_season_name(itm.ListItem.data)
+                                ActionItem {
+                                    title: "Mark all as watched"
+                                    imageSource: "../assets/images/ic_select.png"
+                                    onTriggered: itm.ListItem.view.markAll(itm.ListItem.data)
+                                }
+                                ActionItem {
+                                    title: "Mark none as watched"
+                                    imageSource: "../assets/images/ic_select_none.png"
+                                    onTriggered: itm.ListItem.view.markNone(itm.ListItem.data)
+                                }
+                            }
+                        ]
                     }
                 }
             ]
