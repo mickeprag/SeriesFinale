@@ -166,8 +166,32 @@ class SortedList(bb.cascades.DataModel):
             if item > sourceIndex:
                 self._sortOrder[i] = self._sortOrder[i]-1
 
-    def resort(self):
-        pass
+    def resort(self, item = None):
+        if item is None:
+            oldItems = list(self._sortOrder)
+            # Remove all old objects
+            while len(self._sortOrder):
+                del self._sortOrder[0]
+                self.itemRemoved.emit([0])
+            # Readd all again, forcing a resort
+            for i in oldItems:
+                self._itemAdded([i])
+            return
+        # Find sourceIndex
+        for index, itm in enumerate(self.model.list()):
+            if itm is not item:
+                continue
+            if index not in self._sortOrder:
+                # Hidden?
+                return
+            # Remove it
+            sortedIndex = self._sortOrder.index(index)
+            del self._sortOrder[sortedIndex]
+            self.itemRemoved.emit([sortedIndex])
+            # Readd it
+            self._itemAdded([index])
+            return
+
     def reapplyFilter(self):
         pass
     def filterAcceptsRow(self, sourceRow, sourceParent):
