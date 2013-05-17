@@ -56,7 +56,7 @@ Page {
                                 }
                                 ActionItem {
                                     title: "Mark none as watched"
-                                    imageSource: "asset:///images/ic_select_none.png"
+                                    imageSource: "asset:///images/ic_deselect.png"
                                     onTriggered: itm.ListItem.view.markNone(itm.ListItem.data)
                                 }
                                 DeleteActionItem {
