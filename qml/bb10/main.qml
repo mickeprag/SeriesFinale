@@ -12,13 +12,13 @@ NavigationPane {
         actions: [
             ActionItem {
                 title: "Add show"
-                imageSource: "../assets/images/ic_add.png"
+                imageSource: "asset:///images/ic_add.png"
                 ActionBar.placement: ActionBarPlacement.OnBar
                 onTriggered: nav.push(addShow)
             },
             ActionItem {
                 title: "Refresh all"
-                imageSource: "../assets/images/ic_refresh.png"
+                imageSource: "asset:///images/ic_refresh.png"
                 ActionBar.placement: ActionBarPlacement.OnBar
                 onTriggered: series_manager.update_all_shows_episodes()
             }
@@ -62,7 +62,7 @@ NavigationPane {
         ImagePaintDefinition {
             id: tile
             repeatPattern: RepeatPattern.XY
-            imageSource: "../assets/images/SeriesFinale_bg.amd"
+            imageSource: "asset:///images/SeriesFinale_bg.amd"
         }
     ]
     
@@ -73,7 +73,7 @@ NavigationPane {
         actions: [
             ActionItem {
                 title: "About"
-                imageSource: "../assets/images/ic_info.png"
+                imageSource: "asset:///images/ic_info.png"
                 onTriggered: nav.push(aboutPage)
             }
         ]

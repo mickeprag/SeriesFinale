@@ -71,7 +71,7 @@ if not os.path.exists(APP_DIR):
 
 PLACEHOLDER_IMAGE = os.path.join(APP_DIR, 'assets', 'images', 'placeholderimage.png')
 DOWNLOADING_IMAGE = os.path.join(APP_DIR, 'downloadingimage.png')
-QML_MAIN          = os.path.join(QML_DIR, 'main.qml')
+QML_MAIN          = 'asset:///main.qml'
 
 LOCALE_DIR = os.path.join(APP_DIR, 'locale')
 

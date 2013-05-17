@@ -27,7 +27,7 @@ Page {
                 orientation: LayoutOrientation.LeftToRight
             }
             ImageView {
-                imageSource: "../assets/images/seriesfinale.png"
+                imageSource: "asset:///images/seriesfinale.png"
                 preferredWidth: 150
                 scalingMethod: ScalingMethod.AspectFit
                 verticalAlignment: VerticalAlignment.Center

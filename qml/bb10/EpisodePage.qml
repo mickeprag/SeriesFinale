@@ -65,13 +65,13 @@ Page {
     actions: [
         ActionItem {
             title: "Previous"
-            imageSource: "../assets/images/ic_up.png"
+            imageSource: "asset:///images/ic_up.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: episode = show.get_previous_episode(episode)
         },
         ActionItem {
             title: "Next"
-            imageSource: "../assets/images/ic_down.png"
+            imageSource: "asset:///images/ic_down.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: episode = show.get_next_episode(episode)
         }

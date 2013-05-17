@@ -53,7 +53,7 @@ Container {
             }
         }
         ImageView {
-            imageSource: "../assets/images/ic_next.png"
+            imageSource: "asset:///images/ic_next.png"
             verticalAlignment: VerticalAlignment.Center
         }
     }

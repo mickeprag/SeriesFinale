@@ -51,12 +51,12 @@ Page {
                                 subtitle: itm.ListItem.view.show.get_season_name(itm.ListItem.data)
                                 ActionItem {
                                     title: "Mark all as watched"
-                                    imageSource: "../assets/images/ic_select.png"
+                                    imageSource: "asset:///images/ic_select.png"
                                     onTriggered: itm.ListItem.view.markAll(itm.ListItem.data)
                                 }
                                 ActionItem {
                                     title: "Mark none as watched"
-                                    imageSource: "../assets/images/ic_select_none.png"
+                                    imageSource: "asset:///images/ic_select_none.png"
                                     onTriggered: itm.ListItem.view.markNone(itm.ListItem.data)
                                 }
                                 DeleteActionItem {
@@ -76,7 +76,7 @@ Page {
     actions: [
         ActionItem {
             title: "Refresh"
-            imageSource: "../assets/images/ic_refresh.png"
+            imageSource: "asset:///images/ic_refresh.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: series_manager.update_show_episodes(show)
         }

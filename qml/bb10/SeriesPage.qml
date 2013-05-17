@@ -10,13 +10,13 @@ Page {
             horizontalAlignment: HorizontalAlignment.Center
             visible: seriesList.length == 0
             ImageView {
-                imageSource: "../assets/images/SeriesFinale_logo.png"
+                imageSource: "asset:///images/SeriesFinale_logo.png"
                 verticalAlignment: VerticalAlignment.Center
                 horizontalAlignment: HorizontalAlignment.Center
                 scalingMethod: ScalingMethod.AspectFit
             }
             ImageView {
-                imageSource: "../assets/images/SeriesFinale_intro.png"
+                imageSource: "asset:///images/SeriesFinale_intro.png"
                 verticalAlignment: VerticalAlignment.Bottom
                 horizontalAlignment: HorizontalAlignment.Center
                 scalingMethod: ScalingMethod.AspectFit
@@ -51,7 +51,7 @@ Page {
                                 title: ListItemData.showName
                                 ActionItem {
                                     title: "Refresh show"
-                                    imageSource: "../assets/images/ic_refresh.png"
+                                    imageSource: "asset:///images/ic_refresh.png"
                                     onTriggered: itm.ListItem.view.updateShow(itm.ListItem.data)
                                 }
                                 DeleteActionItem {

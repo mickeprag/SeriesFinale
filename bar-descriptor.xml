@@ -15,7 +15,7 @@
     <asset path="data/seriesfinale.png">seriesfinale.png</asset>
     <asset path="main.py" entry="true" type="Qnx/Python">main.py</asset>
     <asset path="src/SeriesFinale">SeriesFinale</asset>
-    <asset path="qml/bb10">qml</asset>
+    <asset path="qml/bb10">assets</asset>
     <asset path="data">assets/images</asset>
     <asset path="PySide">PySide</asset>
     <asset path="lib">lib</asset>
@@ -23,6 +23,6 @@
     <permission system="true">run_native</permission>
     <permission>access_internet</permission>
     <env var="CASCADES_THEME" value="dark"/>
-    <env var="PYTHONPATH" value="app/python" />
-    <env var="LD_LIBRARY_PATH" value="app/python/lib:/usr/lib/qt4/lib"/>
+    <env var="PYTHONPATH" value="app/native" />
+    <env var="LD_LIBRARY_PATH" value="app/native/lib:/usr/lib/qt4/lib"/>
 </qnx>
