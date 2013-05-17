@@ -6,28 +6,8 @@ Page {
     content: Container {
         background: nav.background
         layout: DockLayout {}
-        Container {
-            horizontalAlignment: HorizontalAlignment.Center
+        Intro {
             visible: seriesList.length == 0
-            ImageView {
-                imageSource: "asset:///images/SeriesFinale_logo.png"
-                verticalAlignment: VerticalAlignment.Center
-                horizontalAlignment: HorizontalAlignment.Center
-                scalingMethod: ScalingMethod.AspectFit
-            }
-            ImageView {
-                imageSource: "asset:///images/SeriesFinale_intro.png"
-                verticalAlignment: VerticalAlignment.Bottom
-                horizontalAlignment: HorizontalAlignment.Center
-                scalingMethod: ScalingMethod.AspectFit
-                visible: !series_manager.busy
-            }
-            ActivityIndicator {
-                running: true
-                horizontalAlignment: HorizontalAlignment.Center
-                visible: series_manager.busy
-                preferredWidth: 100
-            }
         }
         ListView {
             dataModel: seriesList
