@@ -23,15 +23,17 @@ Page {
                     scalingMethod: ScalingMethod.AspectFit
                 }
                 Container {
-                    Label {
-                        text: '<b>Air date:</b><br />' + (episode ? episode.airDateText : '')
-                        textFormat: TextFormat.Html
-                        multiline: true
+                    Header {
+                        title: 'Air date:'
                     }
                     Label {
-                        text: '<b>Rating:</b><br />' + (episode ? episode.episodeRating : '')
-                        textFormat: TextFormat.Html
-                        multiline: true
+                        text: (episode ? episode.airDateText : '')
+                    }
+                    Header {
+                        title: 'Rating:'
+                    }
+                    Label {
+                        text: (episode ? episode.episodeRating : '')
                     }
                 }
             }

@@ -4,9 +4,8 @@ Page {
     id: page
     content: Container {
         background: nav.background
-        Label {
-            text: "Sort shows by:"
-            textStyle.fontSize: FontSize.XLarge
+        Header {
+            title: "Sort shows by:"
         }
         SegmentedControl {
             options: [
@@ -25,9 +24,8 @@ Page {
             ]
             onSelectedIndexChanged: settings.showsSort = selectedIndex
         }
-        Label {
-            text: "Episode sorting:"
-            textStyle.fontSize: FontSize.XLarge
+        Header {
+            title: "Episode sorting:"
         }
         SegmentedControl {
             options: [
