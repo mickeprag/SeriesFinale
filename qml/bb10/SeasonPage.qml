@@ -10,7 +10,7 @@ Page {
     content: Container {
         background: nav.background
         ImageView {
-            imageSource: show ? show.bannerImage : ''
+            imageSource: show ? 'file://' + show.bannerImage : ''
         }
         ListView {
             id: listView

@@ -13,7 +13,7 @@ Page {
             }
             ImageView {
                 id: banner
-                imageSource: show ? show.bannerImage : ''
+                imageSource: show ? 'file://' + show.bannerImage : ''
             }
             ActivityIndicator {
                 verticalAlignment: VerticalAlignment.Center
