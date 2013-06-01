@@ -157,11 +157,10 @@ class SortedList(bb.cascades.DataModel):
     @Slot(list)
     def _itemRemoved(self, indexPath):
         sourceIndex = indexPath[0]
-        if sourceIndex not in self._sortOrder:
-            return
-        index = self._sortOrder.index(sourceIndex)
-        del self._sortOrder[index]
-        self.itemRemoved.emit([index])
+        if sourceIndex in self._sortOrder:
+            index = self._sortOrder.index(sourceIndex)
+            del self._sortOrder[index]
+            self.itemRemoved.emit([index])
         for i, item in enumerate(self._sortOrder):
             if item > sourceIndex:
                 self._sortOrder[i] = self._sortOrder[i]-1
