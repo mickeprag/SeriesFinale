@@ -79,6 +79,19 @@ Page {
             imageSource: "asset:///images/ic_refresh.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: series_manager.update_show_episodes(show)
+        },
+        InvokeActionItem {
+            id: invoke
+            title: "Show on IMDb"
+            imageSource: "asset:///images/imdblogo_55x29.png"
+            enabled: (show ? show.imdbId != '' : false)
+            query {
+                mimeType: "text/html"
+                uri: "http://www.imdb.com/title/" + (show ? show.imdbId : '')
+                onQueryChanged: invoke.query.updateQuery()
+                invokeActionId: "bb.action.OPEN"
+            }
+            ActionBar.placement: ActionBarPlacement.OnBar
         }
     ]
 }

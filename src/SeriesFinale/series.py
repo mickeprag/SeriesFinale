@@ -46,7 +46,7 @@ class Show(QtCore.QObject):
     def __init__(self, name, genre = None, overview = None, network = None,
                  rating = None, actors = [], episode_list = ListModel(), image = None,
                  thetvdb_id = -1, season_images = {}, id = -1, language = None,
-                 downloading_show_image = False, downloading_season_image = False):
+                 downloading_show_image = False, downloading_season_image = False, imdb_id = ''):
         QtCore.QObject.__init__(self)
         self.id = id
         self.name = name
@@ -57,6 +57,7 @@ class Show(QtCore.QObject):
         self.actors = actors
         self.episode_list = episode_list
         self.thetvdb_id = thetvdb_id
+        self.imdb_id = imdb_id
         self.language = language
         self.downloading_show_image = False
         self.downloading_season_image = downloading_season_image
@@ -98,6 +99,11 @@ class Show(QtCore.QObject):
     def set_banner_image(self, new_path):
         self.bannerImageChanged.emit()
     bannerImage = QtCore.Property(str,banner_image,set_banner_image,notify=bannerImageChanged)
+
+    imdbIdChanged = QtCore.Signal()
+    def getImdbId(self):
+        return self.imdb_id
+    imdbId=QtCore.Property(str,getImdbId,notify=imdbIdChanged)
 
     nameChanged = QtCore.Signal()
     def get_name(self):
@@ -373,7 +379,7 @@ class Episode(QtCore.QObject):
     def __init__(self, name, show, episode_number, season_number = '1',
                  overview = None, director = None, guest_stars = [],
                  rating = None, writer = None, watched = False,
-                 air_date = '', id = -1, image = ''):
+                 air_date = '', id = -1, image = '', imdb_id = ''):
         QtCore.QObject.__init__(self)
         self.id = id
         self.name = name
@@ -386,6 +392,7 @@ class Episode(QtCore.QObject):
         self.guest_stars = guest_stars
         self.rating = rating
         self.writer = writer
+        self.imdb_id = imdb_id
         self.watched = watched
         try:
             self.air_date = datetime.strptime(air_date, '%Y-%m-%d').date()
@@ -404,6 +411,11 @@ class Episode(QtCore.QObject):
         image_file = image_downloader(url, path)
         return image_file
     coverImage = QtCore.Property(str,cover_image,notify=coverImageChanged)
+
+    imdbIdChanged = QtCore.Signal()
+    def getImdbId(self):
+        return self.imdb_id
+    imdbId=QtCore.Property(str,getImdbId,notify=imdbIdChanged)
 
     def get_episode_show_number(self):
         return '%sx%02d' % (self.season_number, int(self.episode_number))
@@ -465,11 +477,13 @@ class Episode(QtCore.QObject):
         self.watched = episode.watched or self.watched
         self.air_date = episode.air_date or self.air_date
         self.image = episode.image or self.image
+        self.imdb_id = episode.imdb_id or self.imdb_id
         #TODO: Maybe we should check which really changed and only emit those signals?
         self.ratingChanged.emit()
         self.titleChanged.emit()
         self.airDateTextChanged.emit()
         self.watchedChanged.emit()
+        self.imdbIdChanged.emit()
         self.coverImageChanged.emit()
 
     airDateTextChanged = QtCore.Signal()
@@ -745,6 +759,7 @@ class SeriesManager(QtCore.QObject):
             episode_list = [self._convert_thetvdbepisode_to_episode(tvdb_ep,show) \
                             for tvdb_ep in tvdbcompleteshow[1]]
             show.update_episode_list(episode_list)
+            show.imdb_id = tvdbcompleteshow[0].imdb_id
         self.updateShowEpisodesComplete.emit(show)
         show.episodesListUpdated.emit()
         show.set_busy(False)
@@ -832,6 +847,7 @@ class SeriesManager(QtCore.QObject):
         show_obj.rating = thetvdb_show.rating
         show_obj.actors = thetvdb_show.actors
         show_obj.thetvdb_id = thetvdb_show.id
+        show_obj.imdb_id = thetvdb_show.imdb_id
         return show_obj
 
     def _convert_thetvdbepisode_to_episode(self, thetvdb_episode, show = None):
@@ -845,6 +861,7 @@ class SeriesManager(QtCore.QObject):
         episode_obj.writer = thetvdb_episode.writer
         episode_obj.air_date = thetvdb_episode.first_aired or ''
         episode_obj.image = thetvdb_episode.image or ''
+        episode_obj.imdb_id = thetvdb_episode.imdb_id or ''
         return episode_obj
 
     def add_show(self, show):

@@ -76,6 +76,19 @@ Page {
             imageSource: "asset:///images/ic_down.png"
             ActionBar.placement: ActionBarPlacement.OnBar
             onTriggered: episode = show.get_next_episode(episode)
+        },
+        InvokeActionItem {
+            id: invoke
+            title: "Show on IMDb"
+            imageSource: "asset:///images/imdblogo_55x29.png"
+            enabled: (episode ? episode.imdbId != '' : false)
+            query {
+                mimeType: "text/html"
+                uri: "http://www.imdb.com/title/" + (episode ? episode.imdbId : '')
+                onQueryChanged: invoke.query.updateQuery()
+                invokeActionId: "bb.action.OPEN"
+            }
+            ActionBar.placement: ActionBarPlacement.OnBar
         }
     ]
 }
