@@ -35,7 +35,6 @@ Page {
                                     onTriggered: itm.ListItem.view.updateShow(itm.ListItem.data)
                                 }
                                 DeleteActionItem {
-                                    title: "Delete show"
                                     onTriggered: itm.ListItem.view.deleteShow(itm.ListItem.data)
                                 }
                             }

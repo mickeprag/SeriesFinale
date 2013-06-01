@@ -60,7 +60,6 @@ Page {
                                     onTriggered: itm.ListItem.view.markNone(itm.ListItem.data)
                                 }
                                 DeleteActionItem {
-                                    title: "Delete season"
                                     onTriggered: itm.ListItem.view.deleteSeason(itm.ListItem.data)
                                 }
                             }
