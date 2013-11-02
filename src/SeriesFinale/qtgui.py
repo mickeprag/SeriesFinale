@@ -73,9 +73,12 @@ class MainWindow(CApplication):
         self.request.queue.put(load_shows_item)
         self.request.start()
 
+        self.bbm = BBMManager()
+
         self.setWindowTitle(constants.SF_NAME)
         settingsWrapper = SettingsWrapper(self)
         self.setSource(constants.QML_MAIN)
+        self.rootContext().setContextProperty('bbm', self.bbm)
         self.rootContext().setContextProperty("series_manager", self.series_manager)
         self.rootContext().setContextProperty("seriesList", self.series_manager.sorted_series_list)
         self.rootContext().setContextProperty("settings", settingsWrapper)
@@ -138,6 +141,54 @@ class MainWindow(CApplication):
 
     def _save_finished_cb(self, dummy_arg, error):
         pass
+
+class BBMManager(QObject):
+    def __init__(self, parent=None):
+        super(BBMManager,self).__init__(parent)
+        self.context = bb.platform.bbm.Context(QUuid('3be235e0-035a-478a-b0a1-ead2d2bebf35'))
+        self.context.registrationStateUpdated.connect(self.processRegistrationStatus)
+        self.messageService = None
+
+    @Slot()
+    def invite_to_download(self):
+        if self.context.registrationState() == bb.platform.bbm.RegistrationState.Type.Allowed:
+            if self.messageService is None:
+                self.messageService = bb.platform.bbm.MessageService(self.context)
+            self.messageService.sendDownloadInvitation()
+        elif self.context.registrationState() == bb.platform.bbm.RegistrationState.Type.BlockedByUser:
+            dialog = bb.system.SystemDialog('Yes', 'Later')
+            dialog.setTitle('Could not invite to download')
+            dialog.setBody('SeriesFinale requires access to BBM to be able to invite users. Do you want to connect SeriesFinale to BBM now?')
+            dialog.exec_()
+            if dialog.result() == bb.system.SystemUiResult.Type.ConfirmButtonSelection:
+                invokeManager = bb.system.InvokeManager()
+                request = bb.system.InvokeRequest()
+                request.setTarget('sys.settings.target')
+                request.setAction("bb.action.OPEN")
+                request.setMimeType('settings/view')
+                request.setUri(QUrl('settings://permissions'))
+                reply = invokeManager.invoke(request)
+        elif self.context.registrationState() == bb.platform.bbm.RegistrationState.Type.BlockedByRIM:
+            self.showMessage('Disconnected by RIM. RIM is preventing this application from connecting to BBM.')
+        elif self.context.registrationState() == bb.platform.bbm.RegistrationState.Type.MaxAppsReached:
+            self.showMessage('Too many applications are connected to BBM. Uninstall one or more applications and try again.')
+        elif self.context.registrationState() == bb.platform.bbm.RegistrationState.Type.NoDataConnection:
+            self.showMessage('Check your Internet connection and try again.')
+        elif self.context.registrationState() == bb.platform.bbm.RegistrationState.Type.NoDataConnection:
+            self.showMessage('Connecting to BBM. Please wait.')
+        else:
+            self.showMessage('An unknown error occurred (%s)' % str(self.context.registrationState()))
+
+    @Slot()
+    def processRegistrationStatus(self, status):
+        if status == bb.platform.bbm.RegistrationState.Type.Unregistered:
+            self.context.requestRegisterApplication()
+
+    def showMessage(self, message):
+        dialog = bb.system.SystemDialog('OK')
+        dialog.setTitle('Could not invite to download')
+        dialog.setBody(message)
+        dialog.exec_()
 
 class SettingsWrapper(QObject):
     def __init__(self, parent=None):

@@ -23,6 +23,8 @@
 
     <permission system="true">run_native</permission>
     <permission>access_internet</permission>
+    <permission>read_device_identifying_information</permission>
+    <permission>bbm_connect</permission>
     <env var="CASCADES_THEME" value="dark"/>
     <env var="PYTHONPATH" value="app/native" />
     <env var="LD_LIBRARY_PATH" value="app/native/lib:/usr/lib/qt4/lib"/>

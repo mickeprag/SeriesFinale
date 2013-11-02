@@ -21,6 +21,12 @@ NavigationPane {
                 imageSource: "asset:///images/ic_refresh.png"
                 ActionBar.placement: ActionBarPlacement.OnBar
                 onTriggered: series_manager.update_all_shows_episodes()
+            },
+            ActionItem {
+                title: "Invite to Download"
+                imageSource: "asset:///images/ic_bbm.png"
+                ActionBar.placement: ActionBarPlacement.InOverflow
+                onTriggered: bbm.invite_to_download()
             }
         ]
     }
