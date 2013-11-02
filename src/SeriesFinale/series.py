@@ -320,6 +320,20 @@ class Show(QtCore.QObject):
         return show_info
     infoMarkup = QtCore.Property(str,get_info_markup,notify=infoMarkupChanged)
 
+    def get_next_show_markup(self):
+        show_info = ''
+        seasons = len(self.get_seasons())
+        if seasons:
+            episodes_info = self.get_episodes_info()
+            #episodes_to_watch = episodes_info['episodes_to_watch']
+            next_episode = episodes_info['next_episode']
+            if self.is_completely_watched():
+                show_info = _('Completely watched')
+            elif next_episode:
+                show_info = _('Next: %s') % next_episode.get_episode_show_number()
+        return show_info
+    nextShowMarkup = QtCore.Property(str,get_next_show_markup,notify=infoMarkupChanged)
+
     @QtCore.Slot(str,result=str)
     def get_season_name(self, season):
         if season == '0':
@@ -920,8 +934,8 @@ class SeriesManager(QtCore.QObject):
                 image_file = os.path.abspath(image_downloader(url, target_file))
                 #scale if needed
                 img = QtGui.QImage(image_file)
-                if img.width() > 150:
-                    newImg = img.scaledToWidth(150)
+                if img.width() > 350:
+                    newImg = img.scaledToWidth(350)
                     newImg.save(image_file)
                 show.set_cover_image(image_file)
                 QtCore.qDebug("T: %s" % image_file)

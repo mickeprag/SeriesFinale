@@ -6,6 +6,7 @@ NavigationPane {
     SeriesPage {
         id: seriesPage
         onShowSelected: {
+            activeFrame.setShow(show)
             showPage.show = show
             nav.push(showPage);
         }

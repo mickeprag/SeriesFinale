@@ -41,7 +41,7 @@ class CApplication(QObject):
         if qml.hasErrors():
             qDebug("QML har errors")
         else:
-            page = qml.createRootObject()
+            page = qml.createRootObject_AbstractPane()
             if page:
                 bb.cascades.Application.instance().setScene(page)
             else:

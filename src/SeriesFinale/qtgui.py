@@ -74,6 +74,7 @@ class MainWindow(CApplication):
         self.request.start()
 
         self.bbm = BBMManager()
+        self.activeFrame = ActiveFrame()
 
         self.setWindowTitle(constants.SF_NAME)
         settingsWrapper = SettingsWrapper(self)
@@ -82,9 +83,12 @@ class MainWindow(CApplication):
         self.rootContext().setContextProperty("series_manager", self.series_manager)
         self.rootContext().setContextProperty("seriesList", self.series_manager.sorted_series_list)
         self.rootContext().setContextProperty("settings", settingsWrapper)
+        self.rootContext().setContextProperty("activeFrame", self.activeFrame)
         settingsWrapper.showsSortChanged.connect(self.series_manager.sorted_series_list.resort)
         settingsWrapper.hideCompletedShowsChanged.connect(self.series_manager.sorted_series_list.reapplyFilter)
         self.showFullScreen()
+        bb.cascades.Application.instance().setCover(self.activeFrame)
+
 
     def closeEvent(self):
         self._exit_cb()
@@ -141,6 +145,20 @@ class MainWindow(CApplication):
 
     def _save_finished_cb(self, dummy_arg, error):
         pass
+
+class ActiveFrame(bb.cascades.SceneCover):
+    def __init__(self,parent=None):
+        super(ActiveFrame,self).__init__(parent)
+        qml = bb.cascades.QmlDocument.create("asset:///AppCover.qml", True)
+        self.qml = qml.instance()
+        self.qml.setContextProperty('show', None)
+        self.qml.load()
+        self.mMainContainer = self.qml.createRootObject_Control()
+        self.setContent(self.mMainContainer)
+
+    @Slot(QObject)
+    def setShow(self, show):
+        self.qml.setContextProperty('show', show)
 
 class BBMManager(QObject):
     def __init__(self, parent=None):
