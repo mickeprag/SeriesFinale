@@ -80,6 +80,15 @@ Page {
             onTriggered: series_manager.update_show_episodes(show)
         },
         InvokeActionItem {
+            ActionBar.placement: ActionBarPlacement.OnBar
+            data: 'Look at this great show I am watching, ' + (show ? show.showName : '')
+            query {
+                invokeTargetId: ""
+                invokeActionId: "bb.action.SHARE"
+                mimeType: "text/plain"
+            }
+        },
+        InvokeActionItem {
             id: invoke
             title: "Show on IMDb"
             imageSource: "asset:///images/imdblogo_55x29.png"

@@ -34,6 +34,14 @@ Page {
                                     imageSource: "asset:///images/ic_refresh.png"
                                     onTriggered: itm.ListItem.view.updateShow(itm.ListItem.data)
                                 }
+                                InvokeActionItem {
+                                    query {
+                                        invokeTargetId: ""
+                                        invokeActionId: "bb.action.SHARE"
+                                        mimeType: "text/plain"
+                                        data: "Look at this great show I am watching, " + itm.ListItem.data.showName
+                                    }
+                                }
                                 DeleteActionItem {
                                     onTriggered: itm.ListItem.view.deleteShow(itm.ListItem.data)
                                 }
