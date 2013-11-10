@@ -672,6 +672,11 @@ class SeriesManager(QtCore.QObject):
         self._save_languages(SF_LANG_FILE)
         return self.languages
 
+    def update_languages(self):
+        self.languages = self.thetvdb.get_available_languages()
+        self._save_languages(SF_LANG_FILE)
+        return self.languages
+
     def get_languages(self):
         if self.languages is None:
             return self.update_languages()
