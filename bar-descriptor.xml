@@ -3,7 +3,7 @@
     <id>com.mickeprag.SeriesFinale</id>
     <name>SeriesFinale</name>
     <author>Micke Prag</author>
-    <versionNumber>1.0.0</versionNumber>
+    <versionNumber>0.6.10</versionNumber>
     <buildIdFile>_buildId</buildIdFile>
     <configuration name="Default">
         <platformArchitecture>armle-v7</platformArchitecture>
