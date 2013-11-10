@@ -12,7 +12,7 @@ Container {
         preferredWidth: 350
     }
     ActivityIndicator {
-        running: true
+        running: series_manager.busy
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
         visible: series_manager.busy
