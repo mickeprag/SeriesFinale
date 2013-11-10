@@ -23,6 +23,7 @@
 
     <permission system="true">run_native</permission>
     <permission>access_internet</permission>
+    <permission>access_shared</permission>
     <permission>read_device_identifying_information</permission>
     <permission>bbm_connect</permission>
     <env var="CASCADES_THEME" value="dark"/>

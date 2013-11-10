@@ -655,6 +655,7 @@ class SeriesManager(QtCore.QObject):
             self.have_deleted = False
             self.isUpdating = False
             self.isLoading = False
+            self.filePicker = None
 
     versionChanged = QtCore.Signal()
     def get_version(self):
@@ -712,6 +713,10 @@ class SeriesManager(QtCore.QObject):
     searchingChanged = QtCore.Signal()
     def get_searching(self): return self.searching
     isSearching = QtCore.Property(bool,get_searching,notify=searchingChanged)
+
+    @QtCore.Slot(result=str)
+    def data_filename(self):
+        return constants.SF_DB_FILE
 
     @QtCore.Slot(str)
     @QtCore.Slot(str,str)
@@ -972,6 +977,25 @@ class SeriesManager(QtCore.QObject):
                 show.set_banner_image(image_file)
             if show.have_cover_image() and show.have_banner_image() and show.have_all_season_images():
                 break
+
+    @QtCore.Slot()
+    def import_backup(self):
+        if self.filePicker == None:
+            self.filePicker = bb.cascades.pickers.FilePicker()
+            self.filePicker.setTitle("Select backup file")
+            self.filePicker.fileSelected.connect(self.importfile_selected)
+        self.filePicker.open()
+
+    def importfile_selected(self, files):
+        self.dialog = bb.system.SystemDialog('Continue', 'Cancel')
+        self.dialog.setTitle('Import')
+        self.dialog.setBody('Importing this file will clear all the current show in this application. Are you sure you want to continue?')
+        self.dialog.exec_()
+        self.dialog.deleteLater()
+        if self.dialog.result() == bb.system.SystemUiResult.Type.ConfirmButtonSelection:
+            self.series_list.clear()
+            self.load(files[0])
+            self.changed = True
 
     def save(self, save_file_path):
         if not self.changed:

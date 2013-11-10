@@ -54,4 +54,30 @@ Page {
             
         }
     }
+    attachedObjects: [
+        Invocation {
+            id: invoke
+            query {
+                invokeTargetId: ""
+                uri: 'file://' + series_manager.data_filename()
+            }
+        }
+    ]
+    actions: [
+        ActionItem {
+            title: "Export data"
+            imageSource: "asset:///images/ic_export.png"
+            ActionBar.placement: ActionBarPlacement.OnBar
+            onTriggered: invoke.trigger("bb.action.SHARE")
+        },
+        ActionItem {
+            title: "Import data"
+            imageSource: "asset:///images/ic_import.png"
+            ActionBar.placement: ActionBarPlacement.OnBar
+            onTriggered: {
+                series_manager.import_backup()
+                nav.pop()
+            }
+        }
+    ]
 }
